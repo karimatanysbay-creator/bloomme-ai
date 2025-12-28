@@ -18,7 +18,7 @@ body {
 }
 
 .container {
-  max-width: 420px;
+  max-width: 460px;
   margin: 40px auto;
   background: white;
   border-radius: 28px;
@@ -26,23 +26,10 @@ body {
   box-shadow: 0 20px 40px rgba(255,105,180,0.2);
 }
 
-h1 {
-  text-align: center;
-  color: #e91e63;
-}
+h1 { text-align: center; color: #e91e63; }
+.subtitle { text-align: center; color: #666; font-size: 14px; }
 
-.subtitle {
-  text-align: center;
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 16px;
-}
-
-input, textarea {
-  width: 100%;
-  margin-top: 10px;
-}
-
+input, textarea { width: 100%; margin-top: 10px; }
 textarea {
   padding: 10px;
   border-radius: 12px;
@@ -50,10 +37,8 @@ textarea {
   resize: none;
 }
 
-.skin label {
-  display: block;
-  margin-top: 6px;
-}
+.section { margin-top: 16px; }
+.section label { display: block; margin-top: 6px; }
 
 button {
   width: 100%;
@@ -67,9 +52,7 @@ button {
   font-weight: bold;
 }
 
-button:disabled {
-  opacity: 0.6;
-}
+button:disabled { opacity: 0.6; }
 
 .preview img {
   width: 100%;
@@ -77,9 +60,7 @@ button:disabled {
   border-radius: 20px;
 }
 
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 
 .card {
   background: #ffe6f0;
@@ -92,41 +73,49 @@ button:disabled {
 .details {
   background: #fff5f9;
   border-radius: 18px;
-  padding: 14px;
+  padding: 16px;
   margin-top: 16px;
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
-  <h1>BloomMe 🌸</h1>
-  <p class="subtitle">Upload your photo and describe your skin</p>
 
-  <input type="file" id="photo" accept="image/*">
+<h1>BloomMe 🌸</h1>
+<p class="subtitle">Upload your photo and describe your skin</p>
 
-  <div class="preview hidden" id="preview">
-    <img id="previewImg">
-  </div>
+<input type="file" id="photo" accept="image/*">
 
-  <div class="skin">
-    <p><strong>Your skin type:</strong></p>
-    <label><input type="radio" name="skin" value="Dry"> Dry</label>
-    <label><input type="radio" name="skin" value="Combination"> Combination</label>
-    <label><input type="radio" name="skin" value="Oily"> Oily</label>
-  </div>
+<div class="preview hidden" id="preview">
+  <img id="previewImg">
+</div>
 
-  <textarea id="description" rows="3"
-    placeholder="Describe your skin (optional)
-Example: dry cheeks, oily nose, sensitive"></textarea>
+<div class="section">
+  <strong>Your skin type:</strong>
+  <label><input type="radio" name="skin" value="Dry"> Dry</label>
+  <label><input type="radio" name="skin" value="Combination"> Combination</label>
+  <label><input type="radio" name="skin" value="Oily"> Oily</label>
+</div>
 
-  <button id="analyzeBtn" disabled>Analyze</button>
+<div class="section">
+  <strong>Skin concerns (choose any):</strong>
+  <label><input type="checkbox" value="acne"> Acne / Problematic</label>
+  <label><input type="checkbox" value="postacne"> Post-acne</label>
+  <label><input type="checkbox" value="sensitive"> Sensitive</label>
+  <label><input type="checkbox" value="clear"> No major issues</label>
+</div>
 
-  <div id="loading" class="hidden subtitle">Analyzing your beauty… ✨</div>
+<textarea id="description" rows="3"
+placeholder="Anything else? (optional)"></textarea>
 
-  <div id="results" class="hidden"></div>
-  <div id="details" class="hidden"></div>
+<button id="analyzeBtn" disabled>Analyze</button>
+
+<div id="loading" class="hidden subtitle">Analyzing your beauty… ✨</div>
+
+<div id="results" class="hidden"></div>
+<div id="details" class="hidden"></div>
+
 </div>
 
 <script>
@@ -149,124 +138,74 @@ photo.onchange = () => {
   }
 };
 
-document.querySelectorAll("input[name='skin']").forEach(radio => {
-  radio.onchange = () => {
-    skinType = radio.value;
-    checkReady();
-  };
+document.querySelectorAll("input[name='skin']").forEach(r => {
+  r.onchange = () => { skinType = r.value; checkReady(); };
 });
 
 function checkReady() {
-  if (photo.files.length && skinType) {
-    analyzeBtn.disabled = false;
-  }
+  if (photo.files.length && skinType) analyzeBtn.disabled = false;
 }
 
 analyzeBtn.onclick = () => {
   loading.classList.remove("hidden");
   results.classList.add("hidden");
   details.classList.add("hidden");
-
   setTimeout(showResults, 2000);
 };
+
+function getConcerns() {
+  return Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
+    .map(c => c.value);
+}
 
 function showResults() {
   loading.classList.add("hidden");
 
+  const concerns = getConcerns();
   const notes = description.value || "No additional notes";
 
   results.innerHTML = \`
     <h3>AI Summary ✨</h3>
     <p>
-      Based on your photo and your description, your skin type is
-      <strong>\${skinType}</strong>.
-      Notes: "\${notes}".
-      We selected makeup looks that enhance your natural features
-      and suit your skin needs.
+      Skin type: <strong>\${skinType}</strong><br>
+      Concerns: <strong>\${concerns.join(", ") || "None"}</strong><br>
+      Notes: "\${notes}"
     </p>
 
-    <h3>Your makeup looks 💄</h3>
-
-    <div class="card" onclick="showLook('soft')">
-      💖 <strong>Soft Glam</strong><br>
-      Elegant and glowing
-    </div>
-
-    <div class="card" onclick="showLook('natural')">
-      🌸 <strong>Natural Glow</strong><br>
-      Fresh everyday look
-    </div>
-
-    <div class="card" onclick="showLook('evening')">
-      🔥 <strong>Evening Look</strong><br>
-      Defined and bold
-    </div>
+    <h3>Your styles 💄</h3>
+    <div class="card" onclick="showLook('soft', concerns)">💖 Soft Glam</div>
+    <div class="card" onclick="showLook('evening', concerns)">✨ Evening Glam</div>
+    <div class="card" onclick="showLook('latina', concerns)">🔥 Latina</div>
+    <div class="card" onclick="showLook('dark', concerns)">🖤 Dark Feminine</div>
+    <div class="card" onclick="showLook('goth', concerns)">⛓ Goth</div>
   \`;
 
   results.classList.remove("hidden");
 }
 
-function showLook(type) {
-  let html = "";
+function showLook(type, concerns) {
+  let extra = "";
 
-  if (type === "soft") {
-    html = \`
-      <h3>💖 Soft Glam</h3>
-      <strong>Steps</strong>
-      <ul>
-        <li>Light foundation</li>
-        <li>Cream blush</li>
-        <li>Soft mascara</li>
-        <li>Glossy lips</li>
-      </ul>
-      <strong>Products</strong>
-      <ul>
-        <li>Dior Backstage Foundation</li>
-        <li>Rare Beauty Cream Blush</li>
-        <li>Fenty Beauty Gloss Bomb</li>
-      </ul>
-    \`;
+  if (concerns.includes("acne") || concerns.includes("postacne")) {
+    extra = "• Non-comedogenic products<br>• Medium coverage<br>";
+  }
+  if (concerns.includes("sensitive")) {
+    extra += "• Fragrance-free formulas<br>";
   }
 
-  if (type === "natural") {
-    html = \`
-      <h3>🌸 Natural Glow</h3>
-      <strong>Steps</strong>
-      <ul>
-        <li>Skin tint</li>
-        <li>Light blush</li>
-        <li>Natural brows</li>
-        <li>Lip balm</li>
-      </ul>
-      <strong>Products</strong>
-      <ul>
-        <li>Glossier Skin Tint</li>
-        <li>Milk Makeup Blush</li>
-        <li>Laneige Lip Balm</li>
-      </ul>
-    \`;
-  }
+  details.innerHTML = \`
+    <h3>\${type.toUpperCase()} LOOK</h3>
+    <p>\${extra}</p>
+    <ul>
+      <li>Foundation: Dior / YSL (based on skin type)</li>
+      <li>Contour: Rare Beauty</li>
+      <li>Blush: Makeup by Mario</li>
+      <li>Eyes: Neutral or bold palette</li>
+      <li>Lips: Fenty / MAC</li>
+      <li>Setting: Long-wear spray</li>
+    </ul>
+  \`;
 
-  if (type === "evening") {
-    html = \`
-      <h3>🔥 Evening Look</h3>
-      <strong>Steps</strong>
-      <ul>
-        <li>Full coverage foundation</li>
-        <li>Contour & highlight</li>
-        <li>Defined eyes</li>
-        <li>Bold lips</li>
-      </ul>
-      <strong>Products</strong>
-      <ul>
-        <li>Estée Lauder Double Wear</li>
-        <li>Huda Beauty Powder</li>
-        <li>MAC Ruby Woo Lipstick</li>
-      </ul>
-    \`;
-  }
-
-  details.innerHTML = html;
   details.classList.remove("hidden");
 }
 </script>

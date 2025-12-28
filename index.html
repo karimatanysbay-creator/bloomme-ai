@@ -9,25 +9,25 @@
     body {
       margin: 0;
       min-height: 100vh;
+      background: linear-gradient(135deg, #ffd6e8, #ffeef6);
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #ffd6e8, #ffeef6);
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     .card {
-      background: #ffffff;
+      background: white;
       padding: 28px;
       border-radius: 22px;
       width: 90%;
-      max-width: 380px;
+      max-width: 400px;
       box-shadow: 0 12px 32px rgba(0,0,0,0.15);
-      text-align: center;
     }
 
     h1 {
       color: #e75480;
+      text-align: center;
       margin-bottom: 6px;
     }
 
@@ -48,20 +48,20 @@
       border: none;
       border-radius: 16px;
       background: #e75480;
-      color: #ffffff;
+      color: white;
       font-size: 16px;
       font-weight: 600;
       margin-top: 16px;
       cursor: pointer;
     }
 
-    input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid #ddd;
+    .style-btn {
+      background: #ffe4ec;
+      color: #333;
+    }
+
+    input[type="file"] {
       margin-top: 10px;
-      font-size: 14px;
     }
 
     .section {
@@ -69,35 +69,35 @@
       margin-top: 20px;
     }
 
-    .style-btn {
-      width: 100%;
-      padding: 14px;
-      margin-top: 10px;
-      border-radius: 14px;
-      border: none;
-      background: #ffe4ec;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
     .product {
       background: #fff0f6;
       padding: 14px;
       border-radius: 14px;
       margin-top: 12px;
-      text-align: left;
     }
 
     .product h3 {
       margin: 0;
-      font-size: 15px;
       color: #e75480;
+      font-size: 15px;
     }
 
     .product p {
       margin-top: 6px;
       font-size: 13px;
       color: #444;
+    }
+
+    img {
+      width: 100%;
+      border-radius: 14px;
+      margin-top: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 8px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -107,21 +107,39 @@
 <div class="card">
 
   <h1>Bloomme 🌸</h1>
-  <p>Personalized makeup & skincare based on your skin and style</p>
+  <p style="text-align:center;">
+    Personalized makeup & skincare based on your skin and style
+  </p>
 
   <!-- STEP 1 -->
-  <button onclick="startAnalysis()">Start analysis</button>
+  <button onclick="start()">Start analysis</button>
 
-  <!-- STEP 2: SKIN -->
+  <!-- STEP 2: SKIN TEST -->
   <div id="skinSection" class="section">
-    <p>What is your skin type?</p>
-    <input id="skinInput" placeholder="Dry, oily, combination, sensitive">
+    <h2>What’s your skin like?</h2>
+
+    <label><input type="radio" name="skin" value="dry"> Dry / tight</label>
+    <label><input type="radio" name="skin" value="oily"> Oily / shiny</label>
+    <label><input type="radio" name="skin" value="combination"> Combination</label>
+    <label><input type="radio" name="skin" value="sensitive"> Sensitive</label>
+
+    <button onclick="goToPhoto()">Continue</button>
+  </div>
+
+  <!-- STEP 3: PHOTO -->
+  <div id="photoSection" class="section">
+    <h2>Upload a selfie (optional)</h2>
+    <p>This helps us personalize your recommendations</p>
+
+    <input type="file" accept="image/*" onchange="previewPhoto(event)">
+    <img id="photoPreview" style="display:none;">
+
     <button onclick="goToStyle()">Continue</button>
   </div>
 
-  <!-- STEP 3: STYLE -->
+  <!-- STEP 4: STYLE -->
   <div id="styleSection" class="section">
-    <p>Choose your makeup style</p>
+    <h2>Choose your makeup style</h2>
 
     <button class="style-btn" onclick="selectStyle('Soft Glam')">💖 Soft Glam</button>
     <button class="style-btn" onclick="selectStyle('Evening Glam')">✨ Evening Glam</button>
@@ -130,7 +148,7 @@
     <button class="style-btn" onclick="selectStyle('Goth')">⛓ Goth</button>
   </div>
 
-  <!-- STEP 4: PRODUCTS -->
+  <!-- STEP 5: PRODUCTS -->
   <div id="products" class="section"></div>
 
 </div>
@@ -139,119 +157,84 @@
   let skin = "";
   let style = "";
 
-  function startAnalysis() {
+  function start() {
     document.getElementById("skinSection").style.display = "block";
   }
 
-  function goToStyle() {
-    skin = document.getElementById("skinInput").value.toLowerCase();
-    document.getElementById("styleSection").style.display = "block";
-    document.getElementById("products").style.display = "none";
+  function goToPhoto() {
+    const checked = document.querySelector('input[name="skin"]:checked');
+    if (!checked) return alert("Please select your skin type");
+
+    skin = checked.value;
+    document.getElementById("photoSection").style.display = "block";
   }
 
-  function selectStyle(selectedStyle) {
-    style = selectedStyle;
+  function previewPhoto(event) {
+    const img = document.getElementById("photoPreview");
+    img.src = URL.createObjectURL(event.target.files[0]);
+    img.style.display = "block";
+  }
+
+  function goToStyle() {
+    document.getElementById("styleSection").style.display = "block";
+  }
+
+  function selectStyle(selected) {
+    style = selected;
     showProducts();
   }
 
   function showProducts() {
-    const products = document.getElementById("products");
-    products.innerHTML = "<h2>Your personalized picks ✨</h2>";
+    const p = document.getElementById("products");
+    p.innerHTML = "<h2>Your personalized picks ✨</h2>";
 
-    // SKIN BASE
-    if (skin.includes("dry")) {
-      products.innerHTML += product(
-        "Hydrating Foundation",
-        "Creamy texture with a natural glow finish."
+    if (skin === "dry") {
+      p.innerHTML += product(
+        "Hydrating Skin Tint",
+        "Lightweight coverage with hyaluronic acid. No dryness, no flakes."
       );
-      products.innerHTML += product(
-        "Nourishing Moisturizer",
-        "Deep hydration for dry and tight skin."
+      p.innerHTML += product(
+        "Cream Blush (Rose)",
+        "Melts into skin for a fresh, healthy glow."
       );
     }
 
-    if (skin.includes("oily")) {
-      products.innerHTML += product(
-        "Matte Foundation",
+    if (skin === "oily") {
+      p.innerHTML += product(
+        "Soft Matte Foundation",
         "Controls shine without clogging pores."
       );
-      products.innerHTML += product(
-        "Oil-Free Primer",
-        "Keeps makeup fresh all day."
+    }
+
+    if (skin === "sensitive") {
+      p.innerHTML += product(
+        "Calming BB Cream",
+        "Fragrance-free, redness-reducing formula."
       );
     }
 
-    if (skin.includes("combination")) {
-      products.innerHTML += product(
-        "Natural Finish Foundation",
-        "Balanced coverage for combination skin."
-      );
-    }
-
-    // STYLE ADD-ONS
     if (style === "Soft Glam") {
-      products.innerHTML += product(
-        "Cream Blush",
-        "Soft rosy tones for a natural look."
-      );
-      products.innerHTML += product(
-        "Glossy Lip Balm",
-        "Fresh pink shine with hydration."
-      );
-    }
-
-    if (style === "Evening Glam") {
-      products.innerHTML += product(
-        "Full Coverage Concealer",
-        "Perfect base for evening makeup."
-      );
-      products.innerHTML += product(
-        "Nude Rose Lipstick",
-        "Elegant and timeless shade."
-      );
-    }
-
-    if (style === "Latina") {
-      products.innerHTML += product(
-        "Bronzing Powder",
-        "Warm sculpted finish."
-      );
-      products.innerHTML += product(
-        "Red Gloss",
-        "Bold glossy lips."
+      p.innerHTML += product(
+        "Glossy Nude Lip Balm",
+        "Comfortable shine for everyday glam."
       );
     }
 
     if (style === "Dark Feminine") {
-      products.innerHTML += product(
-        "Contour Stick",
-        "Sharp and defined sculpt."
-      );
-      products.innerHTML += product(
-        "Berry Lipstick",
-        "Deep feminine tone."
-      );
-    }
-
-    if (style === "Goth") {
-      products.innerHTML += product(
-        "Porcelain Foundation",
-        "Pale matte finish."
-      );
-      products.innerHTML += product(
+      p.innerHTML += product(
         "Black Cherry Lipstick",
-        "Dark dramatic shade."
+        "Deep, dramatic shade with a satin finish."
       );
     }
 
-    products.style.display = "block";
+    p.style.display = "block";
   }
 
-  function product(name, description) {
+  function product(name, desc) {
     return `
       <div class="product">
         <h3>${name}</h3>
-        <p>${description}</p>
+        <p>${desc}</p>
       </div>
     `;
   }
@@ -259,7 +242,7 @@
 
 </body>
 </html>
-      
+     
 
 
 

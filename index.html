@@ -1,16 +1,47 @@
-<input type="file" id="photo" />
-<button id="analyzeBtn">Analyze</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BloomMe AI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
-<div id="loading" style="display:none;">
-  <p>Analyzing your photo…</p>
+<div class="card">
+  <h1>BloomMe 🌸</h1>
+  <p class="subtitle">Upload a photo and get personalized makeup suggestions</p>
+
+  <input type="file" />
+  <br><br>
+
+  <h3>Skin type</h3>
+  <label><input type="radio" name="skin" value="dry" checked /> Dry</label>
+  <label><input type="radio" name="skin" value="combo" /> Combination</label>
+  <label><input type="radio" name="skin" value="oily" /> Oily</label>
+
+  <h3>Skin concerns</h3>
+  <label><input type="checkbox" value="acne" /> Acne / problematic</label><br>
+  <label><input type="checkbox" value="postacne" /> Post-acne</label><br>
+  <label><input type="checkbox" value="sensitive" /> Sensitive</label>
+
+  <textarea id="notes" placeholder="Extra notes (optional)"></textarea>
+
+  <button onclick="analyze()">Analyze</button>
+
+  <div id="styles" class="hidden">
+    <h2>Your styles 💄</h2>
+
+    <div class="style" onclick="showLook('soft')">💖 Soft Glam</div>
+    <div class="style" onclick="showLook('natural')">🌸 Natural</div>
+    <div class="style" onclick="showLook('evening')">✨ Evening Glam</div>
+    <div class="style" onclick="showLook('latina')">🔥 Latina</div>
+    <div class="style" onclick="showLook('dark')">🖤 Dark Feminine</div>
+    <div class="style" onclick="showLook('goth')">⛓ Goth</div>
+  </div>
+
+  <div id="details" class="hidden"></div>
 </div>
 
-<div id="result" style="display:none;">
-  <h3>Your AI picks 💄</h3>
-
-  <div class="card">💖 Soft Glam<br><small>Perfect for balanced skin tone</small></div>
-  <div class="card">🔥 Night Luxe<br><small>Best for evening contrast</small></div>
-  <div class="card">🌸 Natural Glow<br><small>Enhances natural features</small></div>
-
-  <button onclick="reset()">Try another look</button>
-</div>
+<script src="app.js"></script>
+</body>
+</html>

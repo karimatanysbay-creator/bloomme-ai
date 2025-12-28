@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
 <style>
 body {
   margin: 0;
-  font-family: 'Arial', sans-serif;
+  font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #ffe6f0, #fff);
   display: flex;
   justify-content: center;
@@ -24,7 +24,7 @@ body {
 .card {
   background: white;
   padding: 30px;
-  border-radius: 22px;
+  border-radius: 24px;
   width: 360px;
   box-shadow: 0 20px 45px rgba(0,0,0,0.15);
   text-align: center;
@@ -42,16 +42,28 @@ button {
   color: white;
   font-size: 16px;
   cursor: pointer;
+  margin-top: 15px;
+}
+
+button:disabled {
+  background: #f2a6c8;
+}
+
+img {
+  margin-top: 15px;
+  max-width: 100%;
+  border-radius: 16px;
+  display: none;
 }
 
 .loader {
   display: none;
-  margin-top: 20px;
+  margin-top: 15px;
   color: #d63384;
   font-weight: bold;
 }
 
-.options {
+.results {
   display: none;
   margin-top: 20px;
 }
@@ -60,7 +72,7 @@ button {
   background: #fff0f6;
   border-radius: 16px;
   padding: 14px;
-  margin-top: 12px;
+  margin-top: 10px;
 }
 </style>
 </head>
@@ -68,37 +80,17 @@ button {
 <body>
 <div class="card">
   <h1>BloomMe 🌸</h1>
-  <p>Upload your photo and get AI makeup analysis</p>
+  <p>Upload a photo and get personalized makeup suggestions</p>
 
-  <button onclick="analyze()">Upload photo</button>
+  <input type="file" accept="image/*" id="photoInput" />
+  <img id="preview" />
+
+  <button id="analyzeBtn" disabled onclick="analyze()">Analyze</button>
 
   <div class="loader" id="loader">Analyzing your skin...</div>
 
-  <div class="options" id="options">
-    <h3>Your personalized looks 💄</h3>
-
-    <div class="makeup">💖 Soft Glam<br><small>Balanced glow for your skin tone</small></div>
-    <div class="makeup">🔥 Night Luxe<br><small>Perfect contrast for evening looks</small></div>
-    <div class="makeup">🌸 Natural Glow<br><small>Enhances your natural features</small></div>
-  </div>
-</div>
-
-<script>
-function analyze() {
-  document.getElementById("loader").style.display = "block";
-
-  setTimeout(() => {
-    document.getElementById("loader").style.display = "none";
-    document.getElementById("options").style.display = "block";
-  }, 2000);
-}
-</script>
-
-</body>
-</html>
-  `);
-});
-
-app.listen(PORT, () => {
-  console.log("BloomMe AI running on port " + PORT);
-});
+  <div class="results" id="results">
+    <h3>Your AI picks 💄</h3>
+    <div class="makeup">💖 Soft Glam<br><small>Perfect for balanced skin tone</small></div>
+    <div class="makeup">🔥 Night Luxe<br><small>Best for evening contrast</small></div>
+    <div class="makeup">🌸 Natural Glow<br><small

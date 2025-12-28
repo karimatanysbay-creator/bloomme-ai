@@ -1,7 +1,16 @@
-<h1>BloomMe 🌸</h1>
+<input type="file" id="photo" />
+<button id="analyzeBtn">Analyze</button>
 
-<p>
-Upload a photo — BloomMe will suggest makeup styles that match your skin tone and vibe.
-</p>
+<div id="loading" style="display:none;">
+  <p>Analyzing your photo…</p>
+</div>
 
-<button>Upload photo</button>
+<div id="result" style="display:none;">
+  <h3>Your AI picks 💄</h3>
+
+  <div class="card">💖 Soft Glam<br><small>Perfect for balanced skin tone</small></div>
+  <div class="card">🔥 Night Luxe<br><small>Best for evening contrast</small></div>
+  <div class="card">🌸 Natural Glow<br><small>Enhances natural features</small></div>
+
+  <button onclick="reset()">Try another look</button>
+</div>

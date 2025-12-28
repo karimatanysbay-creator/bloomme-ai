@@ -1,330 +1,209 @@
+const express = require("express");
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+  res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>BloomMe AI</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", sans-serif;
+  background: linear-gradient(135deg, #ffe6ef, #fff);
+}
+
+.container {
+  max-width: 360px;
+  margin: 40px auto;
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #e91e63;
+}
+
+.subtitle {
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background: #e91e63;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.card {
+  background: #fff0f6;
+  border-radius: 18px;
+  padding: 14px;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.hidden {
+  display: none;
+}
+
+#preview {
+  width: 100%;
+  border-radius: 16px;
+  margin-top: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>BloomMe 🌸</h1>
+  <p class="subtitle">Upload a photo and get personalized makeup suggestions</p>
+
+  <input type="file" id="photo" accept="image/*" />
+  <img id="preview" class="hidden"/>
+
+  <button onclick="analyze()">Analyze</button>
+
+  <div id="cards" class="hidden">
+    <h3>Your AI picks 💄</h3>
+
+    <div class="card" onclick="showDetails('soft')">
+      💖 <b>Soft Glam</b><br/>
+      Perfect for balanced skin tone
+    </div>
+
+    <div class="card" onclick="showDetails('night')">
+      🔥 <b>Night Luxe</b><br/>
+      Best for evening contrast
+    </div>
+
+    <div class="card" onclick="showDetails('natural')">
+      🌸 <b>Natural Glow</b><br/>
+      Enhances natural features
+    </div>
+  </div>
+
+  <div id="details"></div>
+</div>
+
 <script>
-const input = document.getElementById("photoInput");
+const photoInput = document.getElementById("photo");
 const preview = document.getElementById("preview");
-const analyzeBtn = document.getElementById("analyzeBtn");
-const loader = document.getElementById("loader");
-const results = document.getElementById("results");
 
-let detectedType = "combo"; // default
-
-// DATA: looks with steps + products
-const LOOKS = {
-  dry: {
-    title: "Skin type: Dry 💧",
-    subtitle: "Hydration + glow focus",
-    looks: [
-      {
-        id: "softGlow",
-        name: "Soft Glow",
-        short: "Hydrating base, creamy textures",
-        steps: [
-          "Apply rich moisturizer",
-          "Use hydrating primer",
-          "Lightweight luminous foundation",
-          "Cream blush",
-          "Glossy lips"
-        ],
-        products: [
-          "Hydrating moisturizer",
-          "Glow primer",
-          "Luminous foundation",
-          "Cream blush",
-          "Lip gloss"
-        ]
-      },
-      {
-        id: "glass",
-        name: "Glass Skin",
-        short: "Dewy, fresh finish",
-        steps: [
-          "Essence for hydration",
-          "Serum",
-          "Skin tint",
-          "Liquid highlighter",
-          "Clear lip balm"
-        ],
-        products: [
-          "Hydrating essence",
-          "Glow serum",
-          "Skin tint",
-          "Liquid highlighter",
-          "Lip balm"
-        ]
-      },
-      {
-        id: "romantic",
-        name: "Romantic Glam",
-        short: "Soft eyes, luminous skin",
-        steps: [
-          "Moisturize well",
-          "Light foundation",
-          "Soft eyeshadow",
-          "Mascara",
-          "Rosy lipstick"
-        ],
-        products: [
-          "Moisturizer",
-          "Light foundation",
-          "Neutral eyeshadow",
-          "Mascara",
-          "Rosy lipstick"
-        ]
-      }
-    ]
-  },
-  oily: {
-    title: "Skin type: Oily ✨",
-    subtitle: "Oil-control + longevity",
-    looks: [
-      {
-        id: "matte",
-        name: "Matte Glam",
-        short: "Matte base, defined eyes",
-        steps: [
-          "Mattifying primer",
-          "Oil-free foundation",
-          "Set with powder",
-          "Define eyes",
-          "Matte lips"
-        ],
-        products: [
-          "Mattifying primer",
-          "Oil-free foundation",
-          "Setting powder",
-          "Eyeliner",
-          "Matte lipstick"
-        ]
-      },
-      {
-        id: "clean",
-        name: "Clean Chic",
-        short: "Fresh skin, lip focus",
-        steps: [
-          "Gel moisturizer",
-          "Light BB cream",
-          "Conceal T-zone",
-          "Mascara",
-          "Bold lips"
-        ],
-        products: [
-          "Gel moisturizer",
-          "BB cream",
-          "Concealer",
-          "Mascara",
-          "Bold lipstick"
-        ]
-      },
-      {
-        id: "night",
-        name: "Night Luxe",
-        short: "Oil-control for evenings",
-        steps: [
-          "Mattifying base",
-          "Long-wear foundation",
-          "Contour",
-          "Smoky eyes",
-          "Statement lips"
-        ],
-        products: [
-          "Mattifying base",
-          "Long-wear foundation",
-          "Contour palette",
-          "Smoky eyeshadow",
-          "Statement lipstick"
-        ]
-      }
-    ]
-  },
-  combo: {
-    title: "Skin type: Combination 🌗",
-    subtitle: "Matte T-zone + glow cheeks",
-    looks: [
-      {
-        id: "balanced",
-        name: "Balanced Glow",
-        short: "Glow cheeks, matte T-zone",
-        steps: [
-          "Light moisturizer",
-          "Primer on T-zone",
-          "Natural foundation",
-          "Cream blush on cheeks",
-          "Lip gloss"
-        ],
-        products: [
-          "Light moisturizer",
-          "Mattifying primer",
-          "Natural foundation",
-          "Cream blush",
-          "Lip gloss"
-        ]
-      },
-      {
-        id: "soft",
-        name: "Soft Glam",
-        short: "Light contour, glossy lips",
-        steps: [
-          "Hydrate cheeks",
-          "Set T-zone",
-          "Soft contour",
-          "Mascara",
-          "Glossy lips"
-        ],
-        products: [
-          "Hydrating cream",
-          "Setting powder",
-          "Contour stick",
-          "Mascara",
-          "Lip gloss"
-        ]
-      },
-      {
-        id: "everyday",
-        name: "Everyday Chic",
-        short: "Fresh & effortless",
-        steps: [
-          "Moisturize",
-          "Skin tint",
-          "Blush",
-          "Brows",
-          "Tinted balm"
-        ],
-        products: [
-          "Moisturizer",
-          "Skin tint",
-          "Blush",
-          "Brow gel",
-          "Tinted balm"
-        ]
-      }
-    ]
-  },
-  normal: {
-    title: "Skin type: Normal 🌼",
-    subtitle: "Balanced & versatile",
-    looks: [
-      {
-        id: "classic",
-        name: "Classic Glam",
-        short: "Even tone, soft eyes",
-        steps: [
-          "Moisturize",
-          "Foundation",
-          "Soft eyeshadow",
-          "Mascara",
-          "Lipstick"
-        ],
-        products: [
-          "Moisturizer",
-          "Foundation",
-          "Eyeshadow",
-          "Mascara",
-          "Lipstick"
-        ]
-      },
-      {
-        id: "natural",
-        name: "Natural Glow",
-        short: "Minimal, healthy skin",
-        steps: [
-          "Light moisturizer",
-          "Skin tint",
-          "Blush",
-          "Brows",
-          "Lip balm"
-        ],
-        products: [
-          "Light moisturizer",
-          "Skin tint",
-          "Blush",
-          "Brow gel",
-          "Lip balm"
-        ]
-      },
-      {
-        id: "evening",
-        name: "Evening Look",
-        short: "Elegant & polished",
-        steps: [
-          "Prep skin",
-          "Foundation",
-          "Define eyes",
-          "Highlighter",
-          "Lipstick"
-        ],
-        products: [
-          "Primer",
-          "Foundation",
-          "Eyeliner",
-          "Highlighter",
-          "Lipstick"
-        ]
-      }
-    ]
+photoInput.onchange = () => {
+  const file = photoInput.files[0];
+  if (file) {
+    preview.src = URL.createObjectURL(file);
+    preview.classList.remove("hidden");
   }
 };
 
-// random “AI detection”
-input.addEventListener("change", () => {
-  const file = input.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    preview.src = reader.result;
-    preview.style.display = "block";
-    analyzeBtn.disabled = false;
-
-    const types = ["dry", "oily", "combo", "normal"];
-    detectedType = types[Math.floor(Math.random() * types.length)];
-  };
-  reader.readAsDataURL(file);
-});
-
 function analyze() {
-  loader.style.display = "block";
-  results.style.display = "none";
-
-  setTimeout(() => {
-    loader.style.display = "none";
-    renderLooks();
-  }, 2000);
+  if (!photoInput.files.length) {
+    alert("Please upload a photo first");
+    return;
+  }
+  document.getElementById("cards").classList.remove("hidden");
 }
 
-function renderLooks() {
-  const data = LOOKS[detectedType];
-  let html = `
-    <h3>${data.title}</h3>
-    <p>${data.subtitle}</p>
-  `;
+function showDetails(type) {
+  const data = {
+    soft: {
+      title: "Soft Glam",
+      steps: [
+        "Hydrating primer",
+        "Light foundation",
+        "Cream blush",
+        "Soft mascara",
+        "Glossy lips"
+      ],
+      products: [
+        "Hydrating primer",
+        "Light foundation",
+        "Cream blush",
+        "Lip gloss"
+      ]
+    },
+    night: {
+      title: "Night Luxe",
+      steps: [
+        "Mattifying base",
+        "Full coverage foundation",
+        "Contour",
+        "Smoky eyes",
+        "Matte lips"
+      ],
+      products: [
+        "Mattifying primer",
+        "Long-wear foundation",
+        "Contour palette",
+        "Smoky eyeshadow",
+        "Matte lipstick"
+      ]
+    },
+    natural: {
+      title: "Natural Glow",
+      steps: [
+        "Moisturizer",
+        "Skin tint",
+        "Soft blush",
+        "Natural brows",
+        "Lip balm"
+      ],
+      products: [
+        "Moisturizer",
+        "Skin tint",
+        "Blush",
+        "Brow gel",
+        "Lip balm"
+      ]
+    }
+  };
 
-  data.looks.forEach(look => {
-    html += `
-      <div class="makeup" onclick="openDetails('${look.id}')">
-        <strong>${look.name}</strong><br>
-        <small>${look.short}</small>
-      </div>
-    `;
-  });
+  const d = data[type];
 
-  // details container
-  html += `<div id="details"></div>`;
-
-  results.innerHTML = html;
-  results.style.display = "block";
-}
-
-function openDetails(id) {
-  const data = LOOKS[detectedType];
-  const look = data.looks.find(l => l.id === id);
-  if (!look) return;
-
-  let detailsHTML = `
-    <h4>${look.name} — Steps</h4>
-    <ol>${look.steps.map(s => `<li>${s}</li>`).join("")}</ol>
-    <h4>Products</h4>
-    <ul>${look.products.map(p => `<li>${p}</li>`).join("")}</ul>
-  `;
-
-  document.getElementById("details").innerHTML = detailsHTML;
+  document.getElementById("details").innerHTML = \`
+    <h3>\${d.title}</h3>
+    <b>Steps</b>
+    <ol>\${d.steps.map(s => "<li>" + s + "</li>").join("")}</ol>
+    <b>Products</b>
+    <ul>\${d.products.map(p => "<li>" + p + "</li>").join("")}</ul>
+  \`;
 }
 </script>
+
+</body>
+</html>
+  `);
+});
+
+app.listen(PORT, () => {
+  console.log("BloomMe running on port", PORT);
+});

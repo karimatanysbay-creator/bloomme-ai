@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TEST</title>
+</head>
+
+<body style="font-family:sans-serif">
+
+<h1>TEST FLOW</h1>
+
+<button onclick="step1()">Start</button>
+
+<div id="a" style="display:none">
+  <p>Skin</p>
+  <input id="skin">
+  <button onclick="step2()">Next</button>
+</div>
+
+<div id="b" style="display:none">
+  <p>Style</p>
+  <button onclick="step3('Soft')">Soft</button>
+  <button onclick="step3('Dark')">Dark</button>
+</div>
+
+<div id="c" style="display:none"></div>
+
+<script>
+function step1() {
+  document.getElementById("a").style.display = "block";
+}
+
+function step2() {
+  document.getElementById("b").style.display = "block";
+}
+
+function step3(style) {
+  document.getElementById("c").innerText = "STYLE = " + style;
+  document.getElementById("c").style.display = "block";
+}
+</script>
+
+</body>
+</html>

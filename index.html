@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bloomme</title>
+  <title>Bloomme — Personalized Makeup & Skincare</title>
 
   <style>
     body {
@@ -28,7 +28,13 @@
 
     h1 {
       color: #e75480;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+    }
+
+    h2 {
+      color: #e75480;
+      font-size: 18px;
+      margin-top: 24px;
     }
 
     p {
@@ -45,7 +51,7 @@
       color: white;
       font-size: 16px;
       font-weight: 600;
-      margin-top: 18px;
+      margin-top: 16px;
       cursor: pointer;
     }
 
@@ -54,14 +60,24 @@
       padding: 12px;
       border-radius: 12px;
       border: 1px solid #ddd;
-      margin-top: 12px;
+      margin-top: 10px;
       font-size: 14px;
     }
 
     .section {
       display: none;
       margin-top: 20px;
-      text-align: left;
+    }
+
+    .style-btn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 10px;
+      border-radius: 14px;
+      border: none;
+      background: #ffe4ec;
+      font-size: 15px;
+      cursor: pointer;
     }
 
     .product {
@@ -69,6 +85,7 @@
       padding: 14px;
       border-radius: 14px;
       margin-top: 12px;
+      text-align: left;
     }
 
     .product h3 {
@@ -78,7 +95,7 @@
     }
 
     .product p {
-      margin: 6px 0 0;
+      margin-top: 6px;
       font-size: 13px;
       color: #444;
     }
@@ -87,51 +104,106 @@
 
 <body>
 
-  <div class="card">
-    <h1>Bloomme 🌸</h1>
-    <p>Personalized makeup & skincare</p>
+<div class="card">
 
-    <!-- STEP 1 -->
-    <button onclick="start()">Start</button>
+  <h1>Bloomme 🌸</h1>
+  <p>Personalized makeup & skincare based on your skin and style</p>
 
-    <!-- STEP 2 -->
-    <div id="skinSection" class="section">
-      <p>Enter your skin type:</p>
-      <input id="skinInput" placeholder="dry, oily, combination">
-      <button onclick="showProducts()">Get products</button>
-    </div>
+  <!-- START -->
+  <button onclick="startAnalysis()">Start analysis</button>
 
-    <!-- STEP 3 PRODUCTS -->
-    <div id="products" class="section">
-      <h2 style="color:#e75480;">Your products ✨</h2>
-
-      <div class="product">
-        <h3>Hydrating Foundation</h3>
-        <p>Perfect for dry & normal skin. Natural glow finish.</p>
-      </div>
-
-      <div class="product">
-        <h3>Cream Blush</h3>
-        <p>Gives fresh look and blends easily with fingers.</p>
-      </div>
-
-      <div class="product">
-        <h3>Glossy Lip Balm</h3>
-        <p>Moisturizing, soft pink shade for everyday makeup.</p>
-      </div>
-    </div>
+  <!-- SKIN -->
+  <div id="skinSection" class="section">
+    <p>What is your skin type?</p>
+    <input id="skinInput" placeholder="Dry, oily, combination, sensitive">
+    <button onclick="goToStyle()">Get recommendations</button>
   </div>
 
- <script>
-  function start() {
+  <!-- STYLE -->
+  <div id="styleSection" class="section">
+    <p>Choose your makeup style</p>
+
+    <button class="style-btn" onclick="selectStyle('Soft Glam')">💖 Soft Glam</button>
+    <button class="style-btn" onclick="selectStyle('Evening Glam')">✨ Evening Glam</button>
+    <button class="style-btn" onclick="selectStyle('Latina')">🔥 Latina</button>
+    <button class="style-btn" onclick="selectStyle('Dark Feminine')">🖤 Dark Feminine</button>
+    <button class="style-btn" onclick="selectStyle('Goth')">⛓ Goth</button>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div id="products" class="section"></div>
+
+</div>
+
+<script>
+  let skin = "";
+  let style = "";
+
+  function startAnalysis() {
     document.getElementById("skinSection").style.display = "block";
   }
 
-  function showProducts() {
-    document.getElementById("products").style.display = "block";
+  function goToStyle() {
+    skin = document.getElementById("skinInput").value.toLowerCase();
+    document.getElementById("styleSection").style.display = "block";
   }
 
-  function selectStyle(style) {
-    alert("Selected style: " + style);
+  function selectStyle(selected) {
+    style = selected;
+    showProducts();
+  }
+
+  function showProducts() {
+    const products = document.getElementById("products");
+    products.innerHTML = "<h2>Your personalized picks ✨</h2>";
+
+    if (skin.includes("dry")) {
+      products.innerHTML += product("Hydrating Foundation", "Creamy texture with a natural glow finish.");
+      products.innerHTML += product("Nourishing Moisturizer", "Deep hydration for dry and tight skin.");
+    }
+
+    if (skin.includes("oily")) {
+      products.innerHTML += product("Matte Foundation", "Controls shine without clogging pores.");
+      products.innerHTML += product("Oil-Free Primer", "Helps makeup stay fresh all day.");
+    }
+
+    if (style === "Soft Glam") {
+      products.innerHTML += product("Cream Blush", "Soft rosy tones for a natural look.");
+      products.innerHTML += product("Glossy Lip Balm", "Fresh pink shine with hydration.");
+    }
+
+    if (style === "Evening Glam") {
+      products.innerHTML += product("Full Coverage Concealer", "Perfect base for evening makeup.");
+      products.innerHTML += product("Nude Rose Lipstick", "Elegant and timeless shade.");
+    }
+
+    if (style === "Latina") {
+      products.innerHTML += product("Bronzing Powder", "Warm sculpted finish.");
+      products.innerHTML += product("Red Gloss", "Bold glossy lips.");
+    }
+
+    if (style === "Dark Feminine") {
+      products.innerHTML += product("Contour Stick", "Sharp and defined sculpt.");
+      products.innerHTML += product("Berry Lipstick", "Deep feminine tone.");
+    }
+
+    if (style === "Goth") {
+      products.innerHTML += product("Porcelain Foundation", "Pale matte finish.");
+      products.innerHTML += product("Black Cherry Lipstick", "Dark dramatic shade.");
+    }
+
+    products.style.display = "block";
+  }
+
+  function product(name, desc) {
+    return `
+      <div class="product">
+        <h3>${name}</h3>
+        <p>${desc}</p>
+      </div>
+    `;
   }
 </script>
+
+</body>
+</html>

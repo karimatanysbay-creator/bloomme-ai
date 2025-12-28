@@ -24,9 +24,9 @@ body {
 .card {
   background: white;
   padding: 30px;
-  border-radius: 20px;
+  border-radius: 22px;
   width: 360px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.15);
   text-align: center;
 }
 
@@ -44,8 +44,11 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  background: #ff4da6;
+.loader {
+  display: none;
+  margin-top: 20px;
+  color: #d63384;
+  font-weight: bold;
 }
 
 .options {
@@ -55,8 +58,8 @@ button:hover {
 
 .makeup {
   background: #fff0f6;
-  border-radius: 15px;
-  padding: 15px;
+  border-radius: 16px;
+  padding: 14px;
   margin-top: 12px;
 }
 </style>
@@ -65,21 +68,29 @@ button:hover {
 <body>
 <div class="card">
   <h1>BloomMe 🌸</h1>
-  <p>Upload your photo and get AI makeup suggestions</p>
-  <button onclick="showResults()">Upload photo</button>
+  <p>Upload your photo and get AI makeup analysis</p>
+
+  <button onclick="analyze()">Upload photo</button>
+
+  <div class="loader" id="loader">Analyzing your skin...</div>
 
   <div class="options" id="options">
-    <h3>Your AI Picks 💄</h3>
+    <h3>Your personalized looks 💄</h3>
 
-    <div class="makeup">💖 Soft Glam<br><small>Perfect for everyday elegance</small></div>
-    <div class="makeup">🔥 Bold Night<br><small>For parties & night looks</small></div>
-    <div class="makeup">🌸 Natural Glow<br><small>Fresh & minimal beauty</small></div>
+    <div class="makeup">💖 Soft Glam<br><small>Balanced glow for your skin tone</small></div>
+    <div class="makeup">🔥 Night Luxe<br><small>Perfect contrast for evening looks</small></div>
+    <div class="makeup">🌸 Natural Glow<br><small>Enhances your natural features</small></div>
   </div>
 </div>
 
 <script>
-function showResults() {
-  document.getElementById("options").style.display = "block";
+function analyze() {
+  document.getElementById("loader").style.display = "block";
+
+  setTimeout(() => {
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("options").style.display = "block";
+  }, 2000);
 }
 </script>
 
@@ -89,5 +100,5 @@ function showResults() {
 });
 
 app.listen(PORT, () => {
-  console.log("BloomMe running on port " + PORT);
+  console.log("BloomMe AI running on port " + PORT);
 });

@@ -1,13 +1,13 @@
-// Global state
+// GLOBAL STATE
 let skin = "";
 let style = "";
 
 // STEP 1
 function start() {
-  show("skinSection");
+  document.getElementById("skinSection").style.display = "block";
 }
 
-// STEP 2: SKIN TEST → PHOTO
+// STEP 2 — SKIN TEST → PHOTO
 function goToPhoto() {
   const checked = document.querySelector('input[name="skin"]:checked');
   if (!checked) {
@@ -15,7 +15,7 @@ function goToPhoto() {
     return;
   }
   skin = checked.value;
-  show("photoSection");
+  document.getElementById("photoSection").style.display = "block";
 }
 
 // PHOTO PREVIEW
@@ -26,108 +26,112 @@ function previewPhoto(event) {
   img.style.display = "block";
 }
 
-// STEP 3: PHOTO → STYLE
+// STEP 3 — PHOTO → STYLE
 function goToStyle() {
-  show("styleSection");
+  document.getElementById("styleSection").style.display = "block";
 }
 
-// STEP 4: STYLE → PRODUCTS
-function selectStyle(selected) {
-  style = selected;
+// STEP 4 — STYLE → ROUTINE
+function selectStyle(selectedStyle) {
+  style = selectedStyle;
   showProducts();
 }
 
-// RENDER PRODUCTS
+// =======================
+// MAIN LOGIC (ROUTINE)
+// =======================
 function showProducts() {
   const p = document.getElementById("products");
-  p.innerHTML = "<h2>Your personalized picks ✨</h2>";
+  p.innerHTML = `<h2>Your personalized routine ✨</h2>`;
 
-  // SKIN-BASED PICKS
+  // ===== DRY SKIN =====
   if (skin === "dry") {
-    p.innerHTML += product(
-      "Hydrating Skin Tint",
-      "Lightweight coverage with hyaluronic acid. No dryness, no flakes."
-    );
-    p.innerHTML += product(
-      "Cream Blush (Rose)",
-      "Melts into skin for a fresh, healthy glow."
-    );
+
+    p.innerHTML += step(1, "Moisturizer",
+      "Embryolisse Lait-Crème, La Roche-Posay Cicaplast");
+
+    p.innerHTML += step(2, "Vitamin C serum",
+      "La Roche-Posay Pure Vitamin C, The Ordinary Vitamin C");
+
+    p.innerHTML += step(3, "Makeup base / primer",
+      "Milk Makeup Hydro Grip, Dior Backstage Glow Base");
+
+    p.innerHTML += step(4, "Foundation",
+      "Dior Forever Skin Glow, YSL All Hours Glow");
+
+    p.innerHTML += step(5, "Bronzer (cream)",
+      "Rare Beauty Bronzer Stick, Fenty Beauty Match Stix");
+
+    p.innerHTML += step(6, "Contour (cream)",
+      "Rare Beauty Warm Wishes, Charlotte Tilbury Contour Wand");
+
+    p.innerHTML += step(7, "Blush (cream)",
+      "Rare Beauty Soft Pinch, Dior Rosy Glow Stick");
+
+    p.innerHTML += step(8, "Brows",
+      "Anastasia Brow Wiz, Benefit Precisely My Brow");
+
+    p.innerHTML += step(9, "Concealer",
+      "Dior Forever Concealer, NARS Radiant Creamy");
+
+    p.innerHTML += step(10, "Powder",
+      "Laura Mercier Translucent Powder, Huda Beauty Easy Bake");
+
+    p.innerHTML += step(11, "Powder products (re-define)",
+      "Benefit Hoola, Dior Backstage Blush, Fenty Highlighter");
+
+    p.innerHTML += step(12, "Setting spray",
+      "Charlotte Tilbury Airbrush Spray, Urban Decay All Nighter");
   }
 
+  // ===== OILY SKIN =====
   if (skin === "oily") {
-    p.innerHTML += product(
-      "Soft Matte Foundation",
-      "Controls shine without clogging pores."
-    );
-    p.innerHTML += product(
-      "Oil-Free Setting Powder",
-      "Keeps makeup fresh all day."
-    );
-  }
 
-  if (skin === "combination") {
-    p.innerHTML += product(
-      "Natural Finish Foundation",
-      "Balanced coverage for combination skin."
-    );
-  }
+    p.innerHTML += step(1, "Primer",
+      "Milk Makeup Matte Primer, Benefit Porefessional");
 
-  if (skin === "sensitive") {
-    p.innerHTML += product(
-      "Calming BB Cream",
-      "Fragrance-free, redness-reducing formula."
-    );
-  }
+    p.innerHTML += step(2, "Foundation",
+      "Dior Forever Matte, Estée Lauder Double Wear");
 
-  // STYLE ADD-ONS
-  if (style === "Soft Glam") {
-    p.innerHTML += product(
-      "Glossy Nude Lip Balm",
-      "Comfortable shine for everyday glam."
-    );
-  }
+    p.innerHTML += step(3, "Bronzer (cream)",
+      "Rare Beauty Bronzer Stick, Fenty Match Stix");
 
-  if (style === "Evening Glam") {
-    p.innerHTML += product(
-      "Nude Rose Lipstick",
-      "Elegant, soft-focus finish."
-    );
-  }
+    p.innerHTML += step(4, "Contour (cream)",
+      "Charlotte Tilbury Contour Wand");
 
-  if (style === "Latina") {
-    p.innerHTML += product(
-      "Bronzing Powder",
-      "Warm sculpted finish."
-    );
-  }
+    p.innerHTML += step(5, "Blush (cream)",
+      "Rare Beauty Soft Pinch Matte");
 
-  if (style === "Dark Feminine") {
-    p.innerHTML += product(
-      "Berry Lipstick",
-      "Deep feminine tone."
-    );
-  }
+    p.innerHTML += step(6, "Brows",
+      "Anastasia Brow Wiz, Benefit Gimme Brow");
 
-  if (style === "Goth") {
-    p.innerHTML += product(
-      "Black Cherry Lipstick",
-      "Dark dramatic shade."
-    );
+    p.innerHTML += step(7, "Concealer",
+      "NARS Radiant Creamy, Too Faced Born This Way");
+
+    p.innerHTML += step(8, "Powder",
+      "Huda Beauty Easy Bake, Laura Mercier");
+
+    p.innerHTML += step(9, "Baking",
+      "Huda Beauty Easy Bake (under eyes & T-zone)");
+
+    p.innerHTML += step(10, "Powder products",
+      "Benefit Hoola, Dior Backstage Blush, Fenty Highlighter");
+
+    p.innerHTML += step(11, "Setting spray",
+      "Urban Decay All Nighter, Charlotte Tilbury Airbrush");
   }
 
   p.style.display = "block";
 }
 
-// HELPERS
-function product(name, desc) {
+// =======================
+// STEP COMPONENT
+// =======================
+function step(number, title, brands) {
   return `
     <div class="product">
-      <h3>${name}</h3>
-      <p>${desc}</p>
+      <h3>${number}. ${title}</h3>
+      <p><strong>Recommended:</strong> ${brands}</p>
     </div>
   `;
-}
-
-function show(id) {
-  document.getElementById(id).style.display = "block";
 }

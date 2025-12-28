@@ -1,15 +1,20 @@
-const express = require("express");
-const path = require("path");
-const app = express();
-
-const PORT = process.env.PORT || 3000;
-
-app.use(express.static("public"));
-
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-app.listen(PORT, () => {
-  console.log(`BloomMe running on port ${PORT}`);
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>BloomMe AI</title>
+      <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+      <div class="card">
+        <h1>BloomMe 🌸</h1>
+        <p>
+          Upload a photo — BloomMe will suggest makeup styles that match your skin tone and vibe.
+        </p>
+        <button>Upload photo</button>
+      </div>
+    </body>
+    </html>
+  `);
 });

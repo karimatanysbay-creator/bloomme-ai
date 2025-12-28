@@ -93,4 +93,43 @@ img {
     <h3>Your AI picks 💄</h3>
     <div class="makeup">💖 Soft Glam<br><small>Perfect for balanced skin tone</small></div>
     <div class="makeup">🔥 Night Luxe<br><small>Best for evening contrast</small></div>
-    <div class="makeup">🌸 Natural Glow<br><small
+    <div class="makeup">🌸 Natural Glow<br><small>Enhances natural features</small></div>
+  </div>
+</div>
+
+<script>
+const input = document.getElementById("photoInput");
+const preview = document.getElementById("preview");
+const analyzeBtn = document.getElementById("analyzeBtn");
+
+input.addEventListener("change", () => {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    preview.src = reader.result;
+    preview.style.display = "block";
+    analyzeBtn.disabled = false;
+  };
+  reader.readAsDataURL(file);
+});
+
+function analyze() {
+  document.getElementById("loader").style.display = "block";
+
+  setTimeout(() => {
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("results").style.display = "block";
+  }, 2000);
+}
+</script>
+
+</body>
+</html>
+  `);
+});
+
+app.listen(PORT, () => {
+  console.log("BloomMe AI running on port " + PORT);
+});

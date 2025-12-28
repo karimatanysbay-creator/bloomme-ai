@@ -106,7 +106,9 @@
 
   <div class="card">
     <h1>Bloomme 🌸</h1>
-    <p>Personalized makeup & skincare based on your skin and style</p>
+    <p style="text-align:center;">
+      Personalized makeup & skincare based on your skin and style
+    </p>
 
     <button id="startBtn" class="start-btn">
       Start analysis
@@ -114,9 +116,15 @@
   </div>
 
   <script>
-    document.getElementById("startBtn").addEventListener("click", () => {
-      alert("Кнопка работает 💗");
-    });
+    const btn = document.getElementById("startBtn");
+
+    if (btn) {
+      btn.onclick = function () {
+        alert("Кнопка работает 💗");
+      };
+    } else {
+      alert("Кнопка НЕ найдена");
+    }
   </script>
 
 </body>

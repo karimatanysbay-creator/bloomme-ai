@@ -1,7 +1,9 @@
-const startBtn = document.getElementById("startBtn");
-const result = document.getElementById("result");
+document.addEventListener("DOMContentLoaded", () => {
+  const startBtn = document.getElementById("startBtn");
+  const result = document.getElementById("result");
 
-startBtn.addEventListener("click", () => {
-  result.classList.remove("hidden");
-  startBtn.textContent = "Continue";
+  startBtn.addEventListener("click", () => {
+    result.classList.remove("hidden");
+    startBtn.textContent = "Continue";
+  });
 });

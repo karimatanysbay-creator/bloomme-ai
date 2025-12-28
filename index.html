@@ -109,12 +109,21 @@
     <p style="text-align:center;">
       Personalized makeup & skincare based on your skin and style
     </p>
-
-   <button onclick="alert('Кнопка работает 💗')">
+    <button id="startBtn">
   Start analysis
 </button>
+ 
   </div>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("startBtn");
 
+    btn.addEventListener("click", () => {
+      alert("Кнопка работает 💗");
+      // дальше будет переход на следующий шаг
+    });
+  });
+</script>
 </body>
 </html>
 

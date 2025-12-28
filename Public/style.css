@@ -1,70 +1,161 @@
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background: #fde6ee;
+  background: linear-gradient(180deg, #ffe6ef, #fff);
+  min-height: 100vh;
   display: flex;
   justify-content: center;
-  padding: 40px;
+  padding: 20px;
 }
 
-.card {
-  background: white;
-  padding: 25px;
-  border-radius: 20px;
-  width: 360px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+/* ===== CONTAINER ===== */
+.container {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(255, 105, 180, 0.2);
 }
 
+/* ===== HEADER ===== */
 h1 {
   text-align: center;
-  color: #e91e63;
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 6px;
 }
 
 .subtitle {
   text-align: center;
   color: #777;
   font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* ===== UPLOAD ===== */
+input[type="file"] {
+  width: 100%;
+  margin-bottom: 12px;
 }
 
 button {
   width: 100%;
-  padding: 14px;
-  background: #e91e63;
-  color: white;
   border: none;
-  border-radius: 30px;
+  border-radius: 999px;
+  padding: 14px;
   font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  margin-top: 15px;
 }
 
-.style {
-  background: #ffe4ec;
-  padding: 12px;
-  border-radius: 14px;
-  margin: 8px 0;
-  cursor: pointer;
-  font-weight: bold;
+/* ===== MAIN ACTION BUTTON ===== */
+.primary-btn {
+  background: linear-gradient(135deg, #ff4d88, #ff1f6d);
+  color: white;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
-.style:hover {
-  background: #ffd1df;
+.primary-btn:active {
+  transform: scale(0.98);
 }
 
+/* ===== FORM ===== */
+.section {
+  margin-bottom: 20px;
+}
+
+.section h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* ===== RADIO & CHECKBOX ===== */
+.options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.options input {
+  accent-color: #ff4d88;
+}
+
+/* ===== NOTES ===== */
 textarea {
   width: 100%;
-  height: 60px;
   border-radius: 12px;
-  padding: 8px;
-  margin-top: 10px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  font-size: 14px;
 }
 
+/* ===== AI SUMMARY ===== */
+.summary {
+  background: #fff5f9;
+  border-radius: 16px;
+  padding: 14px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* ===== STYLES BUTTONS ===== */
+.style-btn {
+  width: 100%;
+  background: #ffe4ec;
+  border: none;
+  border-radius: 18px;
+  padding: 14px;
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.style-btn:active {
+  background: #ffbfd6;
+  transform: scale(0.98);
+}
+
+/* ===== DETAILS CARD ===== */
+.details {
+  background: #fff5f9;
+  border-radius: 20px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.details h3 {
+  margin-bottom: 10px;
+}
+
+.details ul {
+  padding-left: 18px;
+}
+
+.details li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+/* ===== TRY AGAIN ===== */
+.secondary-btn {
+  margin-top: 20px;
+  background: #ff2f7a;
+  color: white;
+}
+
+/* ===== HIDDEN ===== */
 .hidden {
   display: none;
-}
-
-#details {
-  margin-top: 20px;
-  background: #fff0f5;
-  padding: 15px;
-  border-radius: 16px;
 }

@@ -2,31 +2,28 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
-
 app.get("/", (req, res) => {
   res.send(`
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>BloomMe AI</title>
+<meta charset="UTF-8">
+<title>BloomMe</title>
 
 <style>
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: Arial, sans-serif;
   background: linear-gradient(180deg, #fde7ef, #fff);
 }
 
 .container {
-  max-width: 380px;
+  max-width: 360px;
   margin: 40px auto;
   background: white;
   border-radius: 24px;
   padding: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 }
 
 h1 {
@@ -34,45 +31,33 @@ h1 {
   color: #e91e63;
 }
 
-.subtitle {
+p {
   text-align: center;
-  color: #777;
+  color: #666;
   font-size: 14px;
-  margin-bottom: 20px;
 }
 
-input[type="file"] {
+input {
   width: 100%;
+  margin-top: 10px;
 }
 
 button {
   width: 100%;
-  padding: 14px;
-  margin-top: 16px;
+  margin-top: 15px;
+  padding: 12px;
   border-radius: 999px;
   border: none;
   background: #e91e63;
   color: white;
   font-size: 16px;
-  cursor: pointer;
-}
-
-button:disabled {
-  background: #f3a6be;
 }
 
 #preview {
-  margin-top: 16px;
   width: 100%;
   border-radius: 16px;
+  margin-top: 15px;
   display: none;
-}
-
-#loading {
-  display: none;
-  text-align: center;
-  margin-top: 20px;
-  color: #e91e63;
 }
 
 .cards {
@@ -84,25 +69,13 @@ button:disabled {
   background: #fde7ef;
   padding: 14px;
   border-radius: 16px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   cursor: pointer;
-}
-
-.card strong {
-  display: block;
 }
 
 .details {
   display: none;
   margin-top: 20px;
-}
-
-.details h3 {
-  margin-bottom: 8px;
-}
-
-ul {
-  padding-left: 18px;
 }
 </style>
 </head>
@@ -111,28 +84,17 @@ ul {
 <div class="container">
 
 <h1>BloomMe 🌸</h1>
-<p class="subtitle">Upload a photo and get personalized makeup suggestions</p>
+<p>Upload a photo and choose your makeup look</p>
 
-<input type="file" id="photoInput" accept="image/*" />
-<img id="preview"/>
+<input type="file" id="photo">
+<img id="preview">
 
-<button id="analyzeBtn" disabled>Analyze</button>
-
-<div id="loading">Analyzing your beauty ✨</div>
+<button onclick="analyze()">Analyze</button>
 
 <div class="cards" id="cards">
-  <div class="card" onclick="showDetails('soft')">
-    💖 <strong>Soft Glam</strong>
-    Perfect for balanced skin tone
-  </div>
-  <div class="card" onclick="showDetails('night')">
-    🔥 <strong>Night Luxe</strong>
-    Best for evening contrast
-  </div>
-  <div class="card" onclick="showDetails('natural')">
-    🌸 <strong>Natural Glow</strong>
-    Enhances natural features
-  </div>
+  <div class="card" onclick="show('soft')">💖 Soft Glam</div>
+  <div class="card" onclick="show('night')">🔥 Night Luxe</div>
+  <div class="card" onclick="show('natural')">🌸 Natural Glow</div>
 </div>
 
 <div class="details" id="details"></div>
@@ -140,68 +102,65 @@ ul {
 </div>
 
 <script>
-const photoInput = document.getElementById("photoInput");
+const photo = document.getElementById("photo");
 const preview = document.getElementById("preview");
-const analyzeBtn = document.getElementById("analyzeBtn");
-const loading = document.getElementById("loading");
-const cards = document.getElementById("cards");
-const details = document.getElementById("details");
 
-photoInput.onchange = () => {
-  const file = photoInput.files[0];
-  if (!file) return;
-  preview.src = URL.createObjectURL(file);
-  preview.style.display = "block";
-  analyzeBtn.disabled = false;
+photo.onchange = () => {
+  const file = photo.files[0];
+  if (file) {
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+  }
 };
 
-analyzeBtn.onclick = () => {
-  analyzeBtn.disabled = true;
-  loading.style.display = "block";
-  cards.style.display = "none";
-  details.style.display = "none";
-
-  setTimeout(() => {
-    loading.style.display = "none";
-    cards.style.display = "block";
-  }, 1500);
-};
-
-function showDetails(type) {
-  const data = {
-    soft: {
-      title: "Soft Glam",
-      steps: ["Hydrating primer", "Light foundation", "Cream blush", "Soft mascara", "Glossy lips"],
-      products: ["Hydrating primer", "Light foundation", "Cream blush", "Lip gloss"]
-    },
-    night: {
-      title: "Night Luxe",
-      steps: ["Matte primer", "Full coverage foundation", "Contour", "Bold eyeliner", "Red lips"],
-      products: ["Matte primer", "Contour palette", "Liquid eyeliner", "Red lipstick"]
-    },
-    natural: {
-      title: "Natural Glow",
-      steps: ["Moisturizer", "BB cream", "Liquid blush", "Clear mascara", "Lip balm"],
-      products: ["BB cream", "Liquid blush", "Clear mascara", "Lip balm"]
-    }
-  };
-
-  const look = data[type];
-
-  details.innerHTML = \`
-    <h3>\${look.title}</h3>
-    <strong>Steps</strong>
-    <ul>\${look.steps.map(s => "<li>"+s+"</li>").join("")}</ul>
-    <strong>Products</strong>
-    <ul>\${look.products.map(p => "<li>"+p+"</li>").join("")}</ul>
-    <button onclick="reset()">Try another look</button>
-  \`;
-
-  details.style.display = "block";
+function analyze() {
+  if (!photo.files.length) {
+    alert("Upload a photo first");
+    return;
+  }
+  document.getElementById("cards").style.display = "block";
 }
 
-function reset() {
-  details.style.display = "none";
+function show(type) {
+  const details = document.getElementById("details");
+
+  if (type === "soft") {
+    details.innerHTML = `
+      <h3>💖 Soft Glam</h3>
+      <ol>
+        <li>Hydrating primer</li>
+        <li>Light foundation</li>
+        <li>Cream blush</li>
+        <li>Glossy lips</li>
+      </ol>
+    `;
+  }
+
+  if (type === "night") {
+    details.innerHTML = `
+      <h3>🔥 Night Luxe</h3>
+      <ol>
+        <li>Mattifying primer</li>
+        <li>Full coverage foundation</li>
+        <li>Contour</li>
+        <li>Bold lipstick</li>
+      </ol>
+    `;
+  }
+
+  if (type === "natural") {
+    details.innerHTML = `
+      <h3>🌸 Natural Glow</h3>
+      <ol>
+        <li>BB cream</li>
+        <li>Cream blush</li>
+        <li>Mascara</li>
+        <li>Lip balm</li>
+      </ol>
+    `;
+  }
+
+  details.style.display = "block";
 }
 </script>
 

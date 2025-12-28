@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
-
 const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send(`
@@ -9,22 +10,23 @@ app.get("/", (req, res) => {
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>BloomMe AI</title>
 
 <style>
 body {
   margin: 0;
-  font-family: "Helvetica Neue", sans-serif;
-  background: linear-gradient(135deg, #ffe6ef, #fff);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(180deg, #fde7ef, #fff);
 }
 
 .container {
-  max-width: 360px;
+  max-width: 380px;
   margin: 40px auto;
   background: white;
   border-radius: 24px;
   padding: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
 }
 
 h1 {
@@ -39,169 +41,173 @@ h1 {
   margin-bottom: 20px;
 }
 
+input[type="file"] {
+  width: 100%;
+}
+
 button {
   width: 100%;
   padding: 14px;
-  background: #e91e63;
+  margin-top: 16px;
+  border-radius: 999px;
   border: none;
+  background: #e91e63;
   color: white;
   font-size: 16px;
-  border-radius: 30px;
   cursor: pointer;
-  margin-top: 12px;
 }
 
-button:hover {
-  opacity: 0.9;
-}
-
-.card {
-  background: #fff0f6;
-  border-radius: 18px;
-  padding: 14px;
-  margin-top: 12px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.card:hover {
-  transform: scale(1.03);
-}
-
-.hidden {
-  display: none;
+button:disabled {
+  background: #f3a6be;
 }
 
 #preview {
+  margin-top: 16px;
   width: 100%;
   border-radius: 16px;
-  margin-top: 12px;
+  display: none;
+}
+
+#loading {
+  display: none;
+  text-align: center;
+  margin-top: 20px;
+  color: #e91e63;
+}
+
+.cards {
+  display: none;
+  margin-top: 20px;
+}
+
+.card {
+  background: #fde7ef;
+  padding: 14px;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.card strong {
+  display: block;
+}
+
+.details {
+  display: none;
+  margin-top: 20px;
+}
+
+.details h3 {
+  margin-bottom: 8px;
+}
+
+ul {
+  padding-left: 18px;
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
-  <h1>BloomMe 🌸</h1>
-  <p class="subtitle">Upload a photo and get personalized makeup suggestions</p>
 
-  <input type="file" id="photo" accept="image/*" />
-  <img id="preview" class="hidden"/>
+<h1>BloomMe 🌸</h1>
+<p class="subtitle">Upload a photo and get personalized makeup suggestions</p>
 
-  <button onclick="analyze()">Analyze</button>
+<input type="file" id="photoInput" accept="image/*" />
+<img id="preview"/>
 
-  <div id="cards" class="hidden">
-    <h3>Your AI picks 💄</h3>
+<button id="analyzeBtn" disabled>Analyze</button>
 
-    <div class="card" onclick="showDetails('soft')">
-      💖 <b>Soft Glam</b><br/>
-      Perfect for balanced skin tone
-    </div>
+<div id="loading">Analyzing your beauty ✨</div>
 
-    <div class="card" onclick="showDetails('night')">
-      🔥 <b>Night Luxe</b><br/>
-      Best for evening contrast
-    </div>
-
-    <div class="card" onclick="showDetails('natural')">
-      🌸 <b>Natural Glow</b><br/>
-      Enhances natural features
-    </div>
+<div class="cards" id="cards">
+  <div class="card" onclick="showDetails('soft')">
+    💖 <strong>Soft Glam</strong>
+    Perfect for balanced skin tone
   </div>
+  <div class="card" onclick="showDetails('night')">
+    🔥 <strong>Night Luxe</strong>
+    Best for evening contrast
+  </div>
+  <div class="card" onclick="showDetails('natural')">
+    🌸 <strong>Natural Glow</strong>
+    Enhances natural features
+  </div>
+</div>
 
-  <div id="details"></div>
+<div class="details" id="details"></div>
+
 </div>
 
 <script>
-const photoInput = document.getElementById("photo");
+const photoInput = document.getElementById("photoInput");
 const preview = document.getElementById("preview");
+const analyzeBtn = document.getElementById("analyzeBtn");
+const loading = document.getElementById("loading");
+const cards = document.getElementById("cards");
+const details = document.getElementById("details");
 
 photoInput.onchange = () => {
   const file = photoInput.files[0];
-  if (file) {
-    preview.src = URL.createObjectURL(file);
-    preview.classList.remove("hidden");
-  }
+  if (!file) return;
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = "block";
+  analyzeBtn.disabled = false;
 };
 
-function analyze() {
-  if (!photoInput.files.length) {
-    alert("Please upload a photo first");
-    return;
-  }
-  document.getElementById("cards").classList.remove("hidden");
-}
+analyzeBtn.onclick = () => {
+  analyzeBtn.disabled = true;
+  loading.style.display = "block";
+  cards.style.display = "none";
+  details.style.display = "none";
+
+  setTimeout(() => {
+    loading.style.display = "none";
+    cards.style.display = "block";
+  }, 1500);
+};
 
 function showDetails(type) {
   const data = {
     soft: {
       title: "Soft Glam",
-      steps: [
-        "Hydrating primer",
-        "Light foundation",
-        "Cream blush",
-        "Soft mascara",
-        "Glossy lips"
-      ],
-      products: [
-        "Hydrating primer",
-        "Light foundation",
-        "Cream blush",
-        "Lip gloss"
-      ]
+      steps: ["Hydrating primer", "Light foundation", "Cream blush", "Soft mascara", "Glossy lips"],
+      products: ["Hydrating primer", "Light foundation", "Cream blush", "Lip gloss"]
     },
     night: {
       title: "Night Luxe",
-      steps: [
-        "Mattifying base",
-        "Full coverage foundation",
-        "Contour",
-        "Smoky eyes",
-        "Matte lips"
-      ],
-      products: [
-        "Mattifying primer",
-        "Long-wear foundation",
-        "Contour palette",
-        "Smoky eyeshadow",
-        "Matte lipstick"
-      ]
+      steps: ["Matte primer", "Full coverage foundation", "Contour", "Bold eyeliner", "Red lips"],
+      products: ["Matte primer", "Contour palette", "Liquid eyeliner", "Red lipstick"]
     },
     natural: {
       title: "Natural Glow",
-      steps: [
-        "Moisturizer",
-        "Skin tint",
-        "Soft blush",
-        "Natural brows",
-        "Lip balm"
-      ],
-      products: [
-        "Moisturizer",
-        "Skin tint",
-        "Blush",
-        "Brow gel",
-        "Lip balm"
-      ]
+      steps: ["Moisturizer", "BB cream", "Liquid blush", "Clear mascara", "Lip balm"],
+      products: ["BB cream", "Liquid blush", "Clear mascara", "Lip balm"]
     }
   };
 
-  const d = data[type];
+  const look = data[type];
 
-  document.getElementById("details").innerHTML = \`
-    <h3>\${d.title}</h3>
-    <b>Steps</b>
-    <ol>\${d.steps.map(s => "<li>" + s + "</li>").join("")}</ol>
-    <b>Products</b>
-    <ul>\${d.products.map(p => "<li>" + p + "</li>").join("")}</ul>
+  details.innerHTML = \`
+    <h3>\${look.title}</h3>
+    <strong>Steps</strong>
+    <ul>\${look.steps.map(s => "<li>"+s+"</li>").join("")}</ul>
+    <strong>Products</strong>
+    <ul>\${look.products.map(p => "<li>"+p+"</li>").join("")}</ul>
+    <button onclick="reset()">Try another look</button>
   \`;
+
+  details.style.display = "block";
+}
+
+function reset() {
+  details.style.display = "none";
 }
 </script>
 
 </body>
 </html>
-  `);
+`);
 });
 
 app.listen(PORT, () => {

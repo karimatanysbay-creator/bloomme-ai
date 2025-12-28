@@ -17,7 +17,7 @@
     }
 
     .card {
-      background: white;
+      background: #ffffff;
       padding: 28px;
       border-radius: 22px;
       width: 90%;
@@ -48,7 +48,7 @@
       border: none;
       border-radius: 16px;
       background: #e75480;
-      color: white;
+      color: #ffffff;
       font-size: 16px;
       font-weight: 600;
       margin-top: 16px;
@@ -109,17 +109,17 @@
   <h1>Bloomme 🌸</h1>
   <p>Personalized makeup & skincare based on your skin and style</p>
 
-  <!-- START -->
+  <!-- STEP 1 -->
   <button onclick="startAnalysis()">Start analysis</button>
 
-  <!-- SKIN -->
+  <!-- STEP 2: SKIN -->
   <div id="skinSection" class="section">
     <p>What is your skin type?</p>
     <input id="skinInput" placeholder="Dry, oily, combination, sensitive">
-    <button onclick="goToStyle()">Get recommendations</button>
+    <button onclick="goToStyle()">Continue</button>
   </div>
 
-  <!-- STYLE -->
+  <!-- STEP 3: STYLE -->
   <div id="styleSection" class="section">
     <p>Choose your makeup style</p>
 
@@ -130,7 +130,7 @@
     <button class="style-btn" onclick="selectStyle('Goth')">⛓ Goth</button>
   </div>
 
-  <!-- PRODUCTS -->
+  <!-- STEP 4: PRODUCTS -->
   <div id="products" class="section"></div>
 
 </div>
@@ -146,10 +146,11 @@
   function goToStyle() {
     skin = document.getElementById("skinInput").value.toLowerCase();
     document.getElementById("styleSection").style.display = "block";
+    document.getElementById("products").style.display = "none";
   }
 
-  function selectStyle(selected) {
-    style = selected;
+  function selectStyle(selectedStyle) {
+    style = selectedStyle;
     showProducts();
   }
 
@@ -157,49 +158,100 @@
     const products = document.getElementById("products");
     products.innerHTML = "<h2>Your personalized picks ✨</h2>";
 
+    // SKIN BASE
     if (skin.includes("dry")) {
-      products.innerHTML += product("Hydrating Foundation", "Creamy texture with a natural glow finish.");
-      products.innerHTML += product("Nourishing Moisturizer", "Deep hydration for dry and tight skin.");
+      products.innerHTML += product(
+        "Hydrating Foundation",
+        "Creamy texture with a natural glow finish."
+      );
+      products.innerHTML += product(
+        "Nourishing Moisturizer",
+        "Deep hydration for dry and tight skin."
+      );
     }
 
     if (skin.includes("oily")) {
-      products.innerHTML += product("Matte Foundation", "Controls shine without clogging pores.");
-      products.innerHTML += product("Oil-Free Primer", "Helps makeup stay fresh all day.");
+      products.innerHTML += product(
+        "Matte Foundation",
+        "Controls shine without clogging pores."
+      );
+      products.innerHTML += product(
+        "Oil-Free Primer",
+        "Keeps makeup fresh all day."
+      );
     }
 
+    if (skin.includes("combination")) {
+      products.innerHTML += product(
+        "Natural Finish Foundation",
+        "Balanced coverage for combination skin."
+      );
+    }
+
+    // STYLE ADD-ONS
     if (style === "Soft Glam") {
-      products.innerHTML += product("Cream Blush", "Soft rosy tones for a natural look.");
-      products.innerHTML += product("Glossy Lip Balm", "Fresh pink shine with hydration.");
+      products.innerHTML += product(
+        "Cream Blush",
+        "Soft rosy tones for a natural look."
+      );
+      products.innerHTML += product(
+        "Glossy Lip Balm",
+        "Fresh pink shine with hydration."
+      );
     }
 
     if (style === "Evening Glam") {
-      products.innerHTML += product("Full Coverage Concealer", "Perfect base for evening makeup.");
-      products.innerHTML += product("Nude Rose Lipstick", "Elegant and timeless shade.");
+      products.innerHTML += product(
+        "Full Coverage Concealer",
+        "Perfect base for evening makeup."
+      );
+      products.innerHTML += product(
+        "Nude Rose Lipstick",
+        "Elegant and timeless shade."
+      );
     }
 
     if (style === "Latina") {
-      products.innerHTML += product("Bronzing Powder", "Warm sculpted finish.");
-      products.innerHTML += product("Red Gloss", "Bold glossy lips.");
+      products.innerHTML += product(
+        "Bronzing Powder",
+        "Warm sculpted finish."
+      );
+      products.innerHTML += product(
+        "Red Gloss",
+        "Bold glossy lips."
+      );
     }
 
     if (style === "Dark Feminine") {
-      products.innerHTML += product("Contour Stick", "Sharp and defined sculpt.");
-      products.innerHTML += product("Berry Lipstick", "Deep feminine tone.");
+      products.innerHTML += product(
+        "Contour Stick",
+        "Sharp and defined sculpt."
+      );
+      products.innerHTML += product(
+        "Berry Lipstick",
+        "Deep feminine tone."
+      );
     }
 
     if (style === "Goth") {
-      products.innerHTML += product("Porcelain Foundation", "Pale matte finish.");
-      products.innerHTML += product("Black Cherry Lipstick", "Dark dramatic shade.");
+      products.innerHTML += product(
+        "Porcelain Foundation",
+        "Pale matte finish."
+      );
+      products.innerHTML += product(
+        "Black Cherry Lipstick",
+        "Dark dramatic shade."
+      );
     }
 
     products.style.display = "block";
   }
 
-  function product(name, desc) {
+  function product(name, description) {
     return `
       <div class="product">
         <h3>${name}</h3>
-        <p>${desc}</p>
+        <p>${description}</p>
       </div>
     `;
   }
@@ -207,3 +259,10 @@
 
 </body>
 </html>
+      
+
+
+
+
+
+

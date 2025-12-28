@@ -2,43 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>BloomMe AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bloomme</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-<div class="card">
-  <h1>BloomMe 🌸</h1>
-  <p class="subtitle">Upload a photo and get personalized makeup suggestions</p>
+  <div class="container">
+    <h1>Bloomme 🌸</h1>
+    <p>Discover your skin type and get personalized makeup</p>
 
-  <input type="file" />
-  <br><br>
+    <button id="startBtn">Start</button>
 
-  <h3>Skin type</h3>
-  <label><input type="radio" name="skin" value="dry" checked /> Dry</label>
-  <label><input type="radio" name="skin" value="combo" /> Combination</label>
-  <label><input type="radio" name="skin" value="oily" /> Oily</label>
+    <div id="result" class="hidden">
+      <p>Upload a photo or type your skin type:</p>
+      <input type="text" placeholder="e.g. dry, oily, combination" />
+    </div>
+  </div>
 
-  <h3>Skin concerns</h3>
-  <label><input type="checkbox" value="acne" /> Acne / problematic</label><br>
-  <label><input type="checkbox" value="postacne" /> Post-acne</label><br>
-  <label><input type="checkbox" value="sensitive" /> Sensitive</label>
-
-  <textarea id="notes" placeholder="Extra notes (optional)"></textarea>
-
-  <button onclick="analyze()">Analyze</button>
-
-  <div id="styles" class="hidden">
-    <h2>Your styles 💄</h2>
-<button class="style-btn" data-style="soft">💖 Soft Glam</button>
-<button class="style-btn" data-style="natural">🌸 Natural</button>
-<button class="style-btn" data-style="evening">✨ Evening Glam</button>
-<button class="style-btn" data-style="latina">🔥 Latina</button>
-<button class="style-btn" data-style="dark">🖤 Dark Feminine</button>
-<button class="style-btn" data-style="goth">⛓ Goth</button>
-  <div id="details" class="hidden"></div>
-</div>
-
-<script src="app.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

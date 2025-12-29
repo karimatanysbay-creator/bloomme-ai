@@ -1,134 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bloomme — Personalized Makeup & Skincare</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloomme AI</title>
 
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #ffd6e8, #ffeef6);
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(180deg, #f5dce3, #e8c7d2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-    .card {
-      background: white;
-      padding: 28px;
-      border-radius: 22px;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.15);
-    }
+.card {
+  background: rgba(255,255,255,0.35);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 30px;
+  width: 90%;
+  max-width: 360px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
 
-    h1 {
-      color: #e75480;
-      text-align: center;
-      margin-bottom: 6px;
-    }
+h1 {
+  color: #7c2d47;
+  font-size: 22px;
+}
 
-    h2 {
-      color: #e75480;
-      font-size: 18px;
-      margin-top: 24px;
-    }
+p {
+  color: #5a2a3b;
+  font-size: 14px;
+}
 
-    p {
-      color: #555;
-      font-size: 14px;
-    }
+button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: #8b2f4a;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
 
-    button {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 16px;
-      background: #e75480;
-      color: white;
-      font-size: 16px;
-      font-weight: 600;
-      margin-top: 16px;
-      cursor: pointer;
-    }
+button:active {
+  transform: scale(0.98);
+}
 
-    .style-btn {
-      background: #ffe4ec;
-      color: #333;
-    }
+.hidden { display: none; }
 
-    input[type="file"] {
-      margin-top: 10px;
-    }
-
-    .section {
-      display: none;
-      margin-top: 20px;
-    }
-
-    .product {
-      background: #fff0f6;
-      padding: 14px;
-      border-radius: 14px;
-      margin-top: 12px;
-    }
-
-    .product h3 {
-      margin: 0;
-      color: #e75480;
-      font-size: 15px;
-    }
-
-    .product p {
-      margin-top: 6px;
-      font-size: 13px;
-      color: #444;
-    }
-
-    img {
-      width: 100%;
-      border-radius: 14px;
-      margin-top: 10px;
-    }
-
-    label {
-      display: block;
-      margin-top: 8px;
-      font-size: 14px;
-    }
-  </style>
+input, select {
+  margin-top: 15px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+}
+</style>
 </head>
 
 <body>
 
-  <div class="card">
-    <h1>Bloomme 🌸</h1>
-    <p style="text-align:center;">
-      Personalized makeup & skincare based on your skin and style
-    </p>
-    <button id="startBtn">
-  Start analysis
-</button>
- 
-  </div>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("startBtn");
+<div class="card">
 
-    btn.addEventListener("click", () => {
-    window.location.href = "step2.html";
-      // дальше будет переход на следующий шаг
-    });
-  });
+<!-- START -->
+<div id="startScreen">
+  <h1>Bloomme AI 🌸</h1>
+  <p>Skin analysis & makeup selection</p>
+  <button onclick="startAnalysis()">Start analysis</button>
+</div>
+
+<!-- PROCESS -->
+<div id="processScreen" class="hidden">
+  <h1 id="processText">Analyzing...</h1>
+</div>
+
+<!-- UPLOAD -->
+<div id="uploadScreen" class="hidden">
+  <h1>Upload your photo</h1>
+  <input type="file" accept="image/*">
+  <button onclick="noRecognition()">AI couldn’t recognize my skin</button>
+</div>
+
+<!-- SKIN TYPE -->
+<div id="skinScreen" class="hidden">
+  <h1>Select skin type</h1>
+  <select id="skinType">
+    <option value="">Skin type</option>
+    <option>Dry</option>
+    <option>Oily</option>
+    <option>Combination</option>
+    <option>Normal</option>
+  </select>
+  <button onclick="goToMakeup()">Continue</button>
+</div>
+
+<!-- MAKEUP TYPE -->
+<div id="makeupScreen" class="hidden">
+  <h1>Select makeup style</h1>
+  <select id="makeupType">
+    <option value="">Makeup look</option>
+    <option value="clean">Clean Girl</option>
+    <option value="soft">Soft Glam</option>
+    <option value="full">Full Glam</option>
+    <option value="night">Night / Event</option>
+  </select>
+  <button onclick="showResult()">Get routine</button>
+</div>
+
+<!-- RESULT -->
+<div id="resultScreen" class="hidden">
+  <h1>Your routine 💄</h1>
+  <p id="resultText"></p>
+</div>
+
+</div>
+
+<script>
+function startAnalysis() {
+  hideAll();
+  document.getElementById("processScreen").classList.remove("hidden");
+
+  const text = document.getElementById("processText");
+
+  setTimeout(() => text.innerText = "Detecting skin type…", 500);
+  setTimeout(() => text.innerText = "Analyzing undertone…", 1500);
+  setTimeout(() => text.innerText = "Selecting makeup…", 2500);
+  setTimeout(() => {
+    hideAll();
+    document.getElementById("uploadScreen").classList.remove("hidden");
+  }, 3500);
+}
+
+function noRecognition() {
+  hideAll();
+  document.getElementById("skinScreen").classList.remove("hidden");
+}
+
+function goToMakeup() {
+  if (!document.getElementById("skinType").value) {
+    alert("Please select skin type");
+    return;
+  }
+  hideAll();
+  document.getElementById("makeupScreen").classList.remove("hidden");
+}
+
+function showResult() {
+  const skin = document.getElementById("skinType").value;
+  const makeup = document.getElementById("makeupType").value;
+
+  if (!makeup) {
+    alert("Please select makeup style");
+    return;
+  }
+
+  hideAll();
+  document.getElementById("resultScreen").classList.remove("hidden");
+
+  let routine = "";
+
+  if (makeup === "clean") {
+    routine = `
+1. Moisturizer  
+2. Glowy primer (Milk Makeup)  
+3. Skin tint (YSL / Dior)  
+4. Cream bronzer (Rare Beauty)  
+5. Cream blush  
+6. Brow gel  
+7. Lip gloss  
+8. Setting spray
+`;
+  }
+
+  if (makeup === "soft") {
+    routine = `
+1. Moisturizer + Vitamin C  
+2. Hydrating primer  
+3. Foundation (Dior Forever)  
+4. Concealer (NARS)  
+5. Cream contour (Rare Beauty)  
+6. Blush  
+7. Light powder  
+8. Mascara  
+9. Setting spray
+`;
+  }
+
+  if (makeup === "full") {
+    routine = `
+1. Primer  
+2. Full coverage foundation (Estée Lauder)  
+3. Concealer + baking  
+4. Powder contour  
+5. Bronzer  
+6. Blush  
+7. Highlighter  
+8. Eyeshadow  
+9. Liner + lashes  
+10. Matte lips  
+11. Setting spray
+`;
+  }
+
+  if (makeup === "night") {
+    routine = `
+1. Mattifying primer  
+2. Long-wear foundation (YSL All Hours)  
+3. Concealer + baking  
+4. Sculpt contour  
+5. Bronzer  
+6. Blush  
+7. Highlighter  
+8. Smokey eyes  
+9. Liner + lashes  
+10. Bold lips  
+11. Fixing spray
+`;
+  }
+
+  document.getElementById("resultText").innerText = routine;
+}
+
+function hideAll() {
+  document.querySelectorAll(".card > div").forEach(div => div.classList.add("hidden"));
+}
 </script>
+
 </body>
 </html>
-
-
-
-
-
-

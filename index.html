@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bloomme AI</title>
 
 <style>
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(180deg, #f5dce3, #e8c7d2);
+    background: linear-gradient(180deg, #f3cfd8, #e6b9c6);
+    min-height: 100vh;
     padding: 20px;
   }
 
   .card {
     max-width: 420px;
     margin: auto;
-    background: rgba(255,255,255,0.4);
-    backdrop-filter: blur(18px);
+    background: rgba(255,255,255,0.45);
+    backdrop-filter: blur(20px);
     border-radius: 24px;
     padding: 20px;
   }
@@ -27,32 +28,33 @@
     margin-bottom: 12px;
   }
 
-  .style-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .style-btn {
-    background: #fde8ef;
+  .btn {
+    width: 100%;
+    background: #8b2f4a;
+    color: white;
     border: none;
     border-radius: 16px;
-    padding: 14px 16px;
+    padding: 14px;
     font-size: 16px;
-    text-align: left;
+    margin-bottom: 12px;
     cursor: pointer;
   }
 
-  .style-btn:active {
-    transform: scale(0.98);
+  .btn.secondary {
+    background: #fde8ef;
+    color: #7c2d47;
+    text-align: left;
   }
 
-  #styleResult {
-    margin-top: 20px;
+  .hidden {
+    display: none;
+  }
+
+  .box {
     background: white;
     border-radius: 18px;
     padding: 16px;
-    display: none;
+    margin-top: 16px;
   }
 
   ol {
@@ -64,10 +66,10 @@
   }
 
   .product {
-    margin-top: 10px;
-    padding: 10px;
     background: #f9f1f4;
     border-radius: 12px;
+    padding: 10px;
+    margin-top: 10px;
   }
 
   .product b {
@@ -81,43 +83,72 @@
 
 <div class="card">
 
-  <h2>Your styles 💄</h2>
+  <!-- SKIN TYPE -->
+  <div id="skinScreen">
+    <h2>What's your skin type?</h2>
 
-  <div class="style-list">
-    <button class="style-btn" onclick="openStyle('soft')">💖 Soft Glam</button>
-    <button class="style-btn" onclick="openStyle('evening')">✨ Evening Glam</button>
-    <button class="style-btn" onclick="openStyle('latina')">🔥 Latina</button>
-    <button class="style-btn" onclick="openStyle('dark')">🖤 Dark Feminine</button>
-    <button class="style-btn" onclick="openStyle('goth')">🕷 Goth</button>
+    <button class="btn" onclick="selectSkin('dry')">Dry</button>
+    <button class="btn" onclick="selectSkin('combination')">Combination</button>
+    <button class="btn" onclick="selectSkin('sensitive')">Sensitive</button>
   </div>
 
-  <div id="styleResult"></div>
+  <!-- STYLES -->
+  <div id="styleScreen" class="hidden">
+    <h2>Your styles 💄</h2>
+
+    <button class="btn secondary" onclick="openStyle('soft')">💖 Soft Glam</button>
+    <button class="btn secondary" onclick="openStyle('evening')">✨ Evening Glam</button>
+    <button class="btn secondary" onclick="openStyle('latina')">🔥 Latina</button>
+    <button class="btn secondary" onclick="openStyle('dark')">🖤 Dark Feminine</button>
+    <button class="btn secondary" onclick="openStyle('goth')">🕷 Goth</button>
+
+    <div id="result" class="box hidden"></div>
+  </div>
 
 </div>
 
 <script>
+let skin = "";
+
+function selectSkin(type) {
+  skin = type;
+
+  document.getElementById("skinScreen").classList.add("hidden");
+  document.getElementById("styleScreen").classList.remove("hidden");
+}
+
 function openStyle(style) {
-  const box = document.getElementById("styleResult");
-  box.style.display = "block";
+  const box = document.getElementById("result");
+  box.classList.remove("hidden");
 
-  let html = "<h3>Routine & products ✨</h3><ol>";
+  let html = "<h3>Steps & products ✨</h3><ol>";
 
+  // BASE BY SKIN
+  if (skin === "dry") {
+    html += "<li>Moisturizer + hydrating primer</li>";
+  }
+  if (skin === "combination") {
+    html += "<li>Balancing primer</li>";
+  }
+  if (skin === "sensitive") {
+    html += "<li>Soothing primer (no fragrance)</li>";
+  }
+
+  // STYLE
   if (style === "soft") {
     html += `
-      <li>Hydrating primer</li>
       <li>Light foundation (Dior / YSL)</li>
       <li>Cream blush (Rare Beauty)</li>
       <li>Soft contour</li>
       <li>Glossy lips</li>
     </ol>
-    <div class="product"><b>Dior Forever Skin Glow</b>Natural radiant base</div>
+    <div class="product"><b>Dior Forever Skin Glow</b>Natural radiant finish</div>
     <div class="product"><b>Rare Beauty Soft Pinch</b>Cream blush</div>
     `;
   }
 
   if (style === "evening") {
     html += `
-      <li>Mattifying primer</li>
       <li>Full coverage foundation</li>
       <li>Concealer + baking</li>
       <li>Bronzer & contour</li>
@@ -131,14 +162,13 @@ function openStyle(style) {
 
   if (style === "latina") {
     html += `
-      <li>Glowy primer</li>
-      <li>Warm foundation</li>
+      <li>Glowy foundation</li>
       <li>Bronzer focus</li>
       <li>Sharp eyeliner</li>
       <li>Nude glossy lips</li>
     </ol>
-    <div class="product"><b>Fenty Sun Stalk’r</b>Bronzer</div>
-    <div class="product"><b>NYX Lip Gloss</b>Glossy nude</div>
+    <div class="product"><b>Fenty Sun Stalk’r</b>Warm bronzer</div>
+    <div class="product"><b>NYX Butter Gloss</b>Nude gloss</div>
     `;
   }
 
@@ -146,12 +176,11 @@ function openStyle(style) {
     html += `
       <li>Matte base</li>
       <li>Sculpted contour</li>
-      <li>Muted blush tones</li>
       <li>Bold eyeliner</li>
       <li>Berry lips</li>
     </ol>
     <div class="product"><b>MAC Matte Lipstick</b>Berry shades</div>
-    <div class="product"><b>KVD Eyeliner</b>Sharp black</div>
+    <div class="product"><b>KVD Tattoo Liner</b>Deep black</div>
     `;
   }
 
@@ -162,8 +191,8 @@ function openStyle(style) {
       <li>Dark eyeshadow</li>
       <li>Black cherry lips</li>
     </ol>
-    <div class="product"><b>Urban Decay Eyeshadow</b>Dark tones</div>
-    <div class="product"><b>MAC Diva</b>Black cherry lips</div>
+    <div class="product"><b>Urban Decay Naked</b>Dark tones</div>
+    <div class="product"><b>MAC Diva</b>Black cherry lipstick</div>
     `;
   }
 

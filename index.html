@@ -1,68 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Bloomme AI</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: linear-gradient(180deg, #f5dce3, #e8c7d2);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(180deg, #f5dce3, #e8c7d2);
+    padding: 20px;
+  }
 
-.card {
-  background: rgba(255,255,255,0.35);
-  backdrop-filter: blur(20px);
-  border-radius: 24px;
-  padding: 30px;
-  width: 90%;
-  max-width: 360px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-}
+  .card {
+    max-width: 420px;
+    margin: auto;
+    background: rgba(255,255,255,0.4);
+    backdrop-filter: blur(18px);
+    border-radius: 24px;
+    padding: 20px;
+  }
 
-h1 {
-  color: #7c2d47;
-  font-size: 22px;
-}
+  h2, h3 {
+    color: #7c2d47;
+    margin-bottom: 12px;
+  }
 
-p {
-  color: #5a2a3b;
-  font-size: 14px;
-}
+  .style-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
 
-button {
-  margin-top: 20px;
-  width: 100%;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  background: #8b2f4a;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
+  .style-btn {
+    background: #fde8ef;
+    border: none;
+    border-radius: 16px;
+    padding: 14px 16px;
+    font-size: 16px;
+    text-align: left;
+    cursor: pointer;
+  }
 
-button:active {
-  transform: scale(0.98);
-}
+  .style-btn:active {
+    transform: scale(0.98);
+  }
 
-.hidden { display: none; }
+  #styleResult {
+    margin-top: 20px;
+    background: white;
+    border-radius: 18px;
+    padding: 16px;
+    display: none;
+  }
 
-input, select {
-  margin-top: 15px;
-  width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  font-size: 14px;
-}
+  ol {
+    padding-left: 18px;
+  }
+
+  li {
+    margin-bottom: 8px;
+  }
+
+  .product {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f9f1f4;
+    border-radius: 12px;
+  }
+
+  .product b {
+    display: block;
+    margin-bottom: 4px;
+  }
 </style>
 </head>
 
@@ -70,167 +81,93 @@ input, select {
 
 <div class="card">
 
-<!-- START -->
-<div id="startScreen">
-  <h1>Bloomme AI 🌸</h1>
-  <p>Skin analysis & makeup selection</p>
-  <button onclick="startAnalysis()">Start analysis</button>
-</div>
+  <h2>Your styles 💄</h2>
 
-<!-- PROCESS -->
-<div id="processScreen" class="hidden">
-  <h1 id="processText">Analyzing...</h1>
-</div>
+  <div class="style-list">
+    <button class="style-btn" onclick="openStyle('soft')">💖 Soft Glam</button>
+    <button class="style-btn" onclick="openStyle('evening')">✨ Evening Glam</button>
+    <button class="style-btn" onclick="openStyle('latina')">🔥 Latina</button>
+    <button class="style-btn" onclick="openStyle('dark')">🖤 Dark Feminine</button>
+    <button class="style-btn" onclick="openStyle('goth')">🕷 Goth</button>
+  </div>
 
-<!-- UPLOAD -->
-<div id="uploadScreen" class="hidden">
-  <h1>Upload your photo</h1>
-  <input type="file" accept="image/*">
-  <button onclick="noRecognition()">AI couldn’t recognize my skin</button>
-</div>
-
-<!-- SKIN TYPE -->
-<div id="skinScreen" class="hidden">
-  <h1>Select skin type</h1>
-  <select id="skinType">
-    <option value="">Skin type</option>
-    <option>Dry</option>
-    <option>Oily</option>
-    <option>Combination</option>
-    <option>Normal</option>
-  </select>
-  <button onclick="goToMakeup()">Continue</button>
-</div>
-
-<!-- MAKEUP TYPE -->
-<div id="makeupScreen" class="hidden">
-  <h1>Select makeup style</h1>
-  <select id="makeupType">
-    <option value="">Makeup look</option>
-    <option value="clean">Clean Girl</option>
-    <option value="soft">Soft Glam</option>
-    <option value="full">Full Glam</option>
-    <option value="night">Night / Event</option>
-  </select>
-  <button onclick="showResult()">Get routine</button>
-</div>
-
-<!-- RESULT -->
-<div id="resultScreen" class="hidden">
-  <h1>Your routine 💄</h1>
-  <p id="resultText"></p>
-</div>
+  <div id="styleResult"></div>
 
 </div>
 
 <script>
-function startAnalysis() {
-  hideAll();
-  document.getElementById("processScreen").classList.remove("hidden");
+function openStyle(style) {
+  const box = document.getElementById("styleResult");
+  box.style.display = "block";
 
-  const text = document.getElementById("processText");
+  let html = "<h3>Routine & products ✨</h3><ol>";
 
-  setTimeout(() => text.innerText = "Detecting skin type…", 500);
-  setTimeout(() => text.innerText = "Analyzing undertone…", 1500);
-  setTimeout(() => text.innerText = "Selecting makeup…", 2500);
-  setTimeout(() => {
-    hideAll();
-    document.getElementById("uploadScreen").classList.remove("hidden");
-  }, 3500);
-}
-
-function noRecognition() {
-  hideAll();
-  document.getElementById("skinScreen").classList.remove("hidden");
-}
-
-function goToMakeup() {
-  if (!document.getElementById("skinType").value) {
-    alert("Please select skin type");
-    return;
-  }
-  hideAll();
-  document.getElementById("makeupScreen").classList.remove("hidden");
-}
-
-function showResult() {
-  const skin = document.getElementById("skinType").value;
-  const makeup = document.getElementById("makeupType").value;
-
-  if (!makeup) {
-    alert("Please select makeup style");
-    return;
+  if (style === "soft") {
+    html += `
+      <li>Hydrating primer</li>
+      <li>Light foundation (Dior / YSL)</li>
+      <li>Cream blush (Rare Beauty)</li>
+      <li>Soft contour</li>
+      <li>Glossy lips</li>
+    </ol>
+    <div class="product"><b>Dior Forever Skin Glow</b>Natural radiant base</div>
+    <div class="product"><b>Rare Beauty Soft Pinch</b>Cream blush</div>
+    `;
   }
 
-  hideAll();
-  document.getElementById("resultScreen").classList.remove("hidden");
-
-  let routine = "";
-
-  if (makeup === "clean") {
-    routine = `
-1. Moisturizer  
-2. Glowy primer (Milk Makeup)  
-3. Skin tint (YSL / Dior)  
-4. Cream bronzer (Rare Beauty)  
-5. Cream blush  
-6. Brow gel  
-7. Lip gloss  
-8. Setting spray
-`;
+  if (style === "evening") {
+    html += `
+      <li>Mattifying primer</li>
+      <li>Full coverage foundation</li>
+      <li>Concealer + baking</li>
+      <li>Bronzer & contour</li>
+      <li>Smokey eyes</li>
+      <li>Setting spray</li>
+    </ol>
+    <div class="product"><b>YSL All Hours</b>Long-wear foundation</div>
+    <div class="product"><b>NARS Concealer</b>High coverage</div>
+    `;
   }
 
-  if (makeup === "soft") {
-    routine = `
-1. Moisturizer + Vitamin C  
-2. Hydrating primer  
-3. Foundation (Dior Forever)  
-4. Concealer (NARS)  
-5. Cream contour (Rare Beauty)  
-6. Blush  
-7. Light powder  
-8. Mascara  
-9. Setting spray
-`;
+  if (style === "latina") {
+    html += `
+      <li>Glowy primer</li>
+      <li>Warm foundation</li>
+      <li>Bronzer focus</li>
+      <li>Sharp eyeliner</li>
+      <li>Nude glossy lips</li>
+    </ol>
+    <div class="product"><b>Fenty Sun Stalk’r</b>Bronzer</div>
+    <div class="product"><b>NYX Lip Gloss</b>Glossy nude</div>
+    `;
   }
 
-  if (makeup === "full") {
-    routine = `
-1. Primer  
-2. Full coverage foundation (Estée Lauder)  
-3. Concealer + baking  
-4. Powder contour  
-5. Bronzer  
-6. Blush  
-7. Highlighter  
-8. Eyeshadow  
-9. Liner + lashes  
-10. Matte lips  
-11. Setting spray
-`;
+  if (style === "dark") {
+    html += `
+      <li>Matte base</li>
+      <li>Sculpted contour</li>
+      <li>Muted blush tones</li>
+      <li>Bold eyeliner</li>
+      <li>Berry lips</li>
+    </ol>
+    <div class="product"><b>MAC Matte Lipstick</b>Berry shades</div>
+    <div class="product"><b>KVD Eyeliner</b>Sharp black</div>
+    `;
   }
 
-  if (makeup === "night") {
-    routine = `
-1. Mattifying primer  
-2. Long-wear foundation (YSL All Hours)  
-3. Concealer + baking  
-4. Sculpt contour  
-5. Bronzer  
-6. Blush  
-7. Highlighter  
-8. Smokey eyes  
-9. Liner + lashes  
-10. Bold lips  
-11. Fixing spray
-`;
+  if (style === "goth") {
+    html += `
+      <li>Pale matte base</li>
+      <li>Strong contour</li>
+      <li>Dark eyeshadow</li>
+      <li>Black cherry lips</li>
+    </ol>
+    <div class="product"><b>Urban Decay Eyeshadow</b>Dark tones</div>
+    <div class="product"><b>MAC Diva</b>Black cherry lips</div>
+    `;
   }
 
-  document.getElementById("resultText").innerText = routine;
-}
-
-function hideAll() {
-  document.querySelectorAll(".card > div").forEach(div => div.classList.add("hidden"));
+  box.innerHTML = html;
 }
 </script>
 

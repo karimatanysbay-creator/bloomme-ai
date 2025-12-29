@@ -1,40 +1,49 @@
-let I=1;
-const go=id=>{document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-const loadPhoto=e=>img.src=URL.createObjectURL(e.target.files[0])
-const setI=v=>{I=v;apply()}
-const apply=()=>{g.style.opacity=I;l.style.opacity=I;e.style.opacity=I*.7}
+<!DOCTYPE html>
+<html lang="en">
 
-const soft=()=>{g.style.opacity=I;l.style.opacity=I;e.style.opacity=I*.5}
-const classic=()=>{g.style.opacity=I*.6;l.style.opacity=I;e.style.opacity=I}
-const clean=()=>{g.style.opacity=I*.5;l.style.opacity=I*.4;e.style.opacity=I*.4}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BloomMe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink: #E8B7C8;
+      --bg: #FFF9F7
+    }
 
-const steps=t=>{
-  go('steps')
-  if(t==='soft'){
-    st.innerText='Soft Glam Glow — Steps'
-    sc.innerHTML=`
-      <div class="step"><b>1. Prep</b>Moisturizer + glow primer<br><span class="note">Embryolisse / CT Flawless Filter</span></div>
-      <div class="step"><b>2. Base</b>Satin foundation<br><span class="note">Armani Luminous Silk</span></div>
-      <div class="step"><b>3. Sculpt</b>Cream bronzer<br><span class="note">Rare Beauty</span></div>
-      <div class="step"><b>4. Lashes & lips</b>Mascara + gloss<br><span class="note">Sky High / Fenty Gloss</span></div>`
-  }
-  if(t==='classic'){
-    st.innerText='Classic Glam — Steps'
-    sc.innerHTML=`
-      <div class="step"><b>1. Prep</b>Smoothing primer<br><span class="note">Benefit Porefessional</span></div>
-      <div class="step"><b>2. Base</b>Full coverage foundation<br><span class="note">Estée Lauder Double Wear</span></div>
-      <div class="step"><b>3. Sculpt</b>Contour + blush<br><span class="note">Makeup by Mario</span></div>
-      <div class="step"><b>4. Finish</b>Matte lips + mascara<br><span class="note">Dior</span></div>`
-  }
-  if(t==='clean'){
-    st.innerText='Clean Sculpted Glam — Steps'
-    sc.innerHTML=`
-      <div class="step"><b>1. Prep</b>Light moisturizer<br><span class="note">La Roche-Posay</span></div>
-      <div class="step"><b>2. Base</b>Skin tint / concealer<br><span class="note">Glossier / Rare Beauty</span></div>
-      <div class="step"><b>3. Sculpt</b>Soft contour + blush<br><span class="note">Westman Atelier</span></div>
-      <div class="step"><b>4. Finish</b>Brow gel + balm<br><span class="note">Benefit / Dior Lip Glow</span></div>`
-  }
-}
-</script>
-</body>
-</html>
+    body {
+      margin: 0;
+      font-family: Inter;
+      background: var(--bg);
+      display: flex;
+      justify-content: center
+    }
+
+    .app {
+      max-width: 420px;
+      width: 100%;
+      padding: 16px
+    }
+
+    .logo {
+      font-family: Playfair Display;
+      font-size: 28px;
+      text-align: center;
+      margin: 6px 0
+    }
+
+    .logo span {
+      color: var(--pink)
+    }
+
+    .h1 {
+      text-align: center;
+      font-weight: 500;
+      margin: 10px 0
+    }
+
+    .p {
+      text-align: center;
+      color: #666;
+      font-size: 13px

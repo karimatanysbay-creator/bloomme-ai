@@ -1,49 +1,194 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BloomMe</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --pink: #E8B7C8;
-      --bg: #FFF9F7
+      --bg: #FFF9F7;
+      --text: #333;
     }
 
     body {
       margin: 0;
-      font-family: Inter;
+      font-family: Inter, sans-serif;
       background: var(--bg);
       display: flex;
-      justify-content: center
+      justify-content: center;
     }
 
     .app {
       max-width: 420px;
       width: 100%;
-      padding: 16px
+      padding: 16px;
     }
 
     .logo {
       font-family: Playfair Display;
       font-size: 28px;
       text-align: center;
-      margin: 6px 0
+      margin-bottom: 14px;
     }
 
     .logo span {
-      color: var(--pink)
+      color: var(--pink);
     }
 
-    .h1 {
+    h2 {
       text-align: center;
       font-weight: 500;
-      margin: 10px 0
+      margin: 16px 0;
     }
 
-    .p {
-      text-align: center;
-      color: #666;
-      font-size: 13px
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: var(--pink);
+      color: white;
+      font-size: 15px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .btn.secondary {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--pink);
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .brand {
+      color: #777;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+
+  <div class="logo">Bloom<span>Me</span></div>
+
+  <!-- ЭКРАН 1: ТИП КОЖИ -->
+  <div id="screen-skin">
+    <h2>Тип кожи</h2>
+    <button class="btn" onclick="selectSkin('dry')">Сухая</button>
+    <button class="btn" onclick="selectSkin('oily')">Жирная</button>
+  </div>
+
+  <!-- ЭКРАН 2: ЦВЕТОТИП -->
+  <div id="screen-color" class="hidden">
+    <h2>Твой цветотип</h2>
+    <button class="btn" onclick="selectColor('warm')">Тёплый</button>
+    <button class="btn" onclick="selectColor('cold')">Холодный</button>
+    <button class="btn" onclick="selectColor('neutral')">Нейтральный</button>
+  </div>
+
+  <!-- ЭКРАН 3: ШАГИ -->
+  <div id="screen-steps" class="hidden">
+    <h2>Поэтапный макияж</h2>
+    <div id="steps"></div>
+    <button class="btn secondary" onclick="restart()">Начать заново</button>
+  </div>
+
+</div>
+
+<script>
+  let skinType = "";
+  let colorType = "";
+
+  const stepsData = {
+    dry: [
+      { step: "Крем + уход", brand: "Embryolisse / La Roche-Posay" },
+      { step: "Витамин C", brand: "The Ordinary" },
+      { step: "База", brand: "Milk Makeup" },
+      { step: "Тон", brand: "YSL / Dior" },
+      { step: "Бронзер", brand: "Rare Beauty" },
+      { step: "Контур", brand: "Rare Beauty" },
+      { step: "Румяна", brand: "Rare Beauty" },
+      { step: "Брови", brand: "Benefit" },
+      { step: "Консилер", brand: "NARS" },
+      { step: "Пудра", brand: "Laura Mercier" },
+      { step: "Сухие продукты", brand: "Контур / Румяна / Хайлайтер" },
+      { step: "Сеттинг-спрей", brand: "Charlotte Tilbury" }
+    ],
+    oily: [
+      { step: "Матирующая база", brand: "Benefit / Milk" },
+      { step: "Тон", brand: "Estée Lauder Double Wear" },
+      { step: "Консилер", brand: "NARS" },
+      { step: "Пудра", brand: "Laura Mercier" },
+      { step: "Бэйкинг", brand: "Huda Beauty" },
+      { step: "Контур", brand: "Rare Beauty" },
+      { step: "Румяна", brand: "Rare Beauty" },
+      { step: "Брови", brand: "Benefit" },
+      { step: "Хайлайтер", brand: "Fenty Beauty" },
+      { step: "Сеттинг-спрей", brand: "Urban Decay" }
+    ]
+  };
+
+  const colorTips = {
+    warm: "Выбирай персиковые, золотые, тёплые нюд оттенки",
+    cold: "Лучше подойдут розовые, ягодные, холодные нюды",
+    neutral: "Подходит большинство оттенков — ориентируйся на баланс"
+  };
+
+  function selectSkin(type) {
+    skinType = type;
+    document.getElementById("screen-skin").classList.add("hidden");
+    document.getElementById("screen-color").classList.remove("hidden");
+  }
+
+  function selectColor(type) {
+    colorType = type;
+    document.getElementById("screen-color").classList.add("hidden");
+    document.getElementById("screen-steps").classList.remove("hidden");
+    renderSteps();
+  }
+
+  function renderSteps() {
+    const container = document.getElementById("steps");
+    container.innerHTML = "";
+
+    container.innerHTML += `
+      <div class="card">
+        <strong>Цветотип:</strong> ${colorTips[colorType]}
+      </div>
+    `;
+
+    stepsData[skinType].forEach((item, index) => {
+      container.innerHTML += `
+        <div class="card">
+          <strong>${index + 1}. ${item.step}</strong>
+          <div class="brand">${item.brand}</div>
+        </div>
+      `;
+    });
+  }
+
+  function restart() {
+    document.getElementById("screen-steps").classList.add("hidden");
+    document.getElementById("screen-skin").classList.remove("hidden");
+  }
+</script>
+
+</body>
+</html>

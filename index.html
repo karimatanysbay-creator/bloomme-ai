@@ -1,204 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bloomme AI</title>
+let I=1;
+const go=id=>{document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+const loadPhoto=e=>img.src=URL.createObjectURL(e.target.files[0])
+const setI=v=>{I=v;apply()}
+const apply=()=>{g.style.opacity=I;l.style.opacity=I;e.style.opacity=I*.7}
 
-<style>
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(180deg, #f3cfd8, #e6b9c6);
-    min-height: 100vh;
-    padding: 20px;
+const soft=()=>{g.style.opacity=I;l.style.opacity=I;e.style.opacity=I*.5}
+const classic=()=>{g.style.opacity=I*.6;l.style.opacity=I;e.style.opacity=I}
+const clean=()=>{g.style.opacity=I*.5;l.style.opacity=I*.4;e.style.opacity=I*.4}
+
+const steps=t=>{
+  go('steps')
+  if(t==='soft'){
+    st.innerText='Soft Glam Glow — Steps'
+    sc.innerHTML=`
+      <div class="step"><b>1. Prep</b>Moisturizer + glow primer<br><span class="note">Embryolisse / CT Flawless Filter</span></div>
+      <div class="step"><b>2. Base</b>Satin foundation<br><span class="note">Armani Luminous Silk</span></div>
+      <div class="step"><b>3. Sculpt</b>Cream bronzer<br><span class="note">Rare Beauty</span></div>
+      <div class="step"><b>4. Lashes & lips</b>Mascara + gloss<br><span class="note">Sky High / Fenty Gloss</span></div>`
   }
-
-  .card {
-    max-width: 420px;
-    margin: auto;
-    background: rgba(255,255,255,0.45);
-    backdrop-filter: blur(20px);
-    border-radius: 24px;
-    padding: 20px;
+  if(t==='classic'){
+    st.innerText='Classic Glam — Steps'
+    sc.innerHTML=`
+      <div class="step"><b>1. Prep</b>Smoothing primer<br><span class="note">Benefit Porefessional</span></div>
+      <div class="step"><b>2. Base</b>Full coverage foundation<br><span class="note">Estée Lauder Double Wear</span></div>
+      <div class="step"><b>3. Sculpt</b>Contour + blush<br><span class="note">Makeup by Mario</span></div>
+      <div class="step"><b>4. Finish</b>Matte lips + mascara<br><span class="note">Dior</span></div>`
   }
-
-  h2, h3 {
-    color: #7c2d47;
-    margin-bottom: 12px;
+  if(t==='clean'){
+    st.innerText='Clean Sculpted Glam — Steps'
+    sc.innerHTML=`
+      <div class="step"><b>1. Prep</b>Light moisturizer<br><span class="note">La Roche-Posay</span></div>
+      <div class="step"><b>2. Base</b>Skin tint / concealer<br><span class="note">Glossier / Rare Beauty</span></div>
+      <div class="step"><b>3. Sculpt</b>Soft contour + blush<br><span class="note">Westman Atelier</span></div>
+      <div class="step"><b>4. Finish</b>Brow gel + balm<br><span class="note">Benefit / Dior Lip Glow</span></div>`
   }
-
-  .btn {
-    width: 100%;
-    background: #8b2f4a;
-    color: white;
-    border: none;
-    border-radius: 16px;
-    padding: 14px;
-    font-size: 16px;
-    margin-bottom: 12px;
-    cursor: pointer;
-  }
-
-  .btn.secondary {
-    background: #fde8ef;
-    color: #7c2d47;
-    text-align: left;
-  }
-
-  .hidden {
-    display: none;
-  }
-
-  .box {
-    background: white;
-    border-radius: 18px;
-    padding: 16px;
-    margin-top: 16px;
-  }
-
-  ol {
-    padding-left: 18px;
-  }
-
-  li {
-    margin-bottom: 8px;
-  }
-
-  .product {
-    background: #f9f1f4;
-    border-radius: 12px;
-    padding: 10px;
-    margin-top: 10px;
-  }
-
-  .product b {
-    display: block;
-    margin-bottom: 4px;
-  }
-</style>
-</head>
-
-<body>
-
-<div class="card">
-
-  <!-- SKIN TYPE -->
-  <div id="skinScreen">
-    <h2>What's your skin type?</h2>
-
-    <button class="btn" onclick="selectSkin('dry')">Dry</button>
-    <button class="btn" onclick="selectSkin('combination')">Combination</button>
-    <button class="btn" onclick="selectSkin('sensitive')">Sensitive</button>
-  </div>
-
-  <!-- STYLES -->
-  <div id="styleScreen" class="hidden">
-    <h2>Your styles 💄</h2>
-
-    <button class="btn secondary" onclick="openStyle('soft')">💖 Soft Glam</button>
-    <button class="btn secondary" onclick="openStyle('evening')">✨ Evening Glam</button>
-    <button class="btn secondary" onclick="openStyle('latina')">🔥 Latina</button>
-    <button class="btn secondary" onclick="openStyle('dark')">🖤 Dark Feminine</button>
-    <button class="btn secondary" onclick="openStyle('goth')">🕷 Goth</button>
-
-    <div id="result" class="box hidden"></div>
-  </div>
-
-</div>
-
-<script>
-let skin = "";
-
-function selectSkin(type) {
-  skin = type;
-
-  document.getElementById("skinScreen").classList.add("hidden");
-  document.getElementById("styleScreen").classList.remove("hidden");
-}
-
-function openStyle(style) {
-  const box = document.getElementById("result");
-  box.classList.remove("hidden");
-
-  let html = "<h3>Steps & products ✨</h3><ol>";
-
-  // BASE BY SKIN
-  if (skin === "dry") {
-    html += "<li>Moisturizer + hydrating primer</li>";
-  }
-  if (skin === "combination") {
-    html += "<li>Balancing primer</li>";
-  }
-  if (skin === "sensitive") {
-    html += "<li>Soothing primer (no fragrance)</li>";
-  }
-
-  // STYLE
-  if (style === "soft") {
-    html += `
-      <li>Light foundation (Dior / YSL)</li>
-      <li>Cream blush (Rare Beauty)</li>
-      <li>Soft contour</li>
-      <li>Glossy lips</li>
-    </ol>
-    <div class="product"><b>Dior Forever Skin Glow</b>Natural radiant finish</div>
-    <div class="product"><b>Rare Beauty Soft Pinch</b>Cream blush</div>
-    `;
-  }
-
-  if (style === "evening") {
-    html += `
-      <li>Full coverage foundation</li>
-      <li>Concealer + baking</li>
-      <li>Bronzer & contour</li>
-      <li>Smokey eyes</li>
-      <li>Setting spray</li>
-    </ol>
-    <div class="product"><b>YSL All Hours</b>Long-wear foundation</div>
-    <div class="product"><b>NARS Concealer</b>High coverage</div>
-    `;
-  }
-
-  if (style === "latina") {
-    html += `
-      <li>Glowy foundation</li>
-      <li>Bronzer focus</li>
-      <li>Sharp eyeliner</li>
-      <li>Nude glossy lips</li>
-    </ol>
-    <div class="product"><b>Fenty Sun Stalk’r</b>Warm bronzer</div>
-    <div class="product"><b>NYX Butter Gloss</b>Nude gloss</div>
-    `;
-  }
-
-  if (style === "dark") {
-    html += `
-      <li>Matte base</li>
-      <li>Sculpted contour</li>
-      <li>Bold eyeliner</li>
-      <li>Berry lips</li>
-    </ol>
-    <div class="product"><b>MAC Matte Lipstick</b>Berry shades</div>
-    <div class="product"><b>KVD Tattoo Liner</b>Deep black</div>
-    `;
-  }
-
-  if (style === "goth") {
-    html += `
-      <li>Pale matte base</li>
-      <li>Strong contour</li>
-      <li>Dark eyeshadow</li>
-      <li>Black cherry lips</li>
-    </ol>
-    <div class="product"><b>Urban Decay Naked</b>Dark tones</div>
-    <div class="product"><b>MAC Diva</b>Black cherry lipstick</div>
-    `;
-  }
-
-  box.innerHTML = html;
 }
 </script>
-
 </body>
 </html>

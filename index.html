@@ -94,77 +94,78 @@
 
   <div class="logo">Bloom<span>Me</span></div>
 
-  <!-- ЭКРАН 1: ТИП КОЖИ -->
+  <!-- 1: ТИП КОЖИ -->
   <div id="screen-skin">
     <h2>Тип кожи</h2>
     <button class="btn" onclick="selectSkin('dry')">Сухая</button>
     <button class="btn" onclick="selectSkin('oily')">Жирная</button>
   </div>
 
-  <!-- ЭКРАН 2: ФОТО -->
+  <!-- 2: ФОТО -->
   <div id="screen-photo" class="hidden">
-    <h2>Загрузи фото лица</h2>
-
+    <h2>Загрузи фото</h2>
     <div class="card">
-      <strong>Рекомендации:</strong>
-      <div class="brand">Без макияжа • дневной свет • фронтально</div>
       <input type="file" accept="image/*" onchange="previewPhoto(event)">
       <img id="preview" class="photo-preview hidden">
     </div>
-
     <button class="btn" onclick="analyze()">Анализировать</button>
   </div>
 
-  <!-- ЭКРАН 3: АНАЛИЗ -->
+  <!-- 3: АНАЛИЗ -->
   <div id="screen-analysis" class="hidden">
     <h2>Результат анализа</h2>
-
-    <div class="card">
-      <strong>Цветотип:</strong>
-      <div id="colorResult" class="brand"></div>
-    </div>
-
-    <div class="card">
-      <strong>Структура кожи:</strong>
-      <div id="skinResult" class="brand"></div>
-    </div>
-
-    <button class="btn" onclick="showSteps()">Показать макияж</button>
+    <div class="card"><strong>Цветотип:</strong><div class="brand">Нейтральный</div></div>
+    <div class="card"><strong>Структура кожи:</strong><div class="brand" id="skinRes"></div></div>
+    <button class="btn" onclick="goMakeup()">Выбрать макияж</button>
   </div>
 
-  <!-- ЭКРАН 4: ШАГИ -->
+  <!-- 4: ВЫБОР МАКИЯЖА -->
+  <div id="screen-makeup" class="hidden">
+    <h2>Какой макияж?</h2>
+    <button class="btn" onclick="selectMakeup('nude')">Nude / Clean girl</button>
+    <button class="btn" onclick="selectMakeup('soft')">Soft glam</button>
+    <button class="btn" onclick="selectMakeup('evening')">Evening / Glam</button>
+    <button class="btn" onclick="selectMakeup('bridal')">Romantic / Bridal</button>
+  </div>
+
+  <!-- 5: ШАГИ -->
   <div id="screen-steps" class="hidden">
     <h2>Твой макияж</h2>
     <div id="steps"></div>
-    <button class="btn secondary" onclick="restart()">Начать заново</button>
+    <button class="btn secondary" onclick="location.reload()">Начать заново</button>
   </div>
 
 </div>
 
 <script>
   let skinType = "";
+  let makeupType = "";
 
-  const stepsData = {
-    dry: [
-      ["Крем + уход", "Embryolisse"],
-      ["Витамин C", "The Ordinary"],
-      ["База", "Milk Makeup"],
-      ["Тон", "YSL / Dior"],
-      ["Контур", "Rare Beauty"],
-      ["Румяна", "Rare Beauty"],
-      ["Консилер", "NARS"],
-      ["Пудра", "Laura Mercier"],
-      ["Сеттинг-спрей", "Charlotte Tilbury"]
+  const makeupSteps = {
+    nude: [
+      ["Лёгкий тон", "YSL / Dior"],
+      ["Кремовые румяна", "Rare Beauty"],
+      ["Брови", "Benefit"],
+      ["Бальзам / нюд", "Dior Lip Glow"]
     ],
-    oily: [
-      ["Матирующая база", "Benefit"],
-      ["Тон", "Estée Lauder Double Wear"],
-      ["Консилер", "NARS"],
-      ["Пудра", "Laura Mercier"],
-      ["Бэйкинг", "Huda Beauty"],
+    soft: [
+      ["Тон", "Dior"],
       ["Контур", "Rare Beauty"],
       ["Румяна", "Rare Beauty"],
-      ["Сеттинг-спрей", "Urban Decay"]
+      ["Тени нюд", "Huda Beauty"],
+      ["Губы", "Charlotte Tilbury"]
+    ],
+    evening: [
+      ["Плотный тон", "Estée Lauder"],
+      ["Контур + бронзер", "Fenty Beauty"],
+      ["Smokey eyes", "Huda Beauty"],
+      ["Красные губы", "Dior"]
+    ],
+    bridal: [
+      ["Сияющий тон", "YSL"],
+      ["Мягкий контур", "Rare Beauty"],
+      ["Румяна розовые", "Charlotte Tilbury"],
+      ["Gloss губы", "Fenty Beauty"]
     ]
   };
 
@@ -174,46 +175,43 @@
     document.getElementById("screen-photo").classList.remove("hidden");
   }
 
-  function previewPhoto(event) {
+  function previewPhoto(e) {
     const img = document.getElementById("preview");
-    img.src = URL.createObjectURL(event.target.files[0]);
+    img.src = URL.createObjectURL(e.target.files[0]);
     img.classList.remove("hidden");
   }
 
   function analyze() {
     document.getElementById("screen-photo").classList.add("hidden");
     document.getElementById("screen-analysis").classList.remove("hidden");
-
-    document.getElementById("colorResult").innerText =
-      Math.random() > 0.5 ? "Тёплый (персиковые, золотые оттенки)" : "Нейтральный";
-
-    document.getElementById("skinResult").innerText =
-      skinType === "dry"
-        ? "Тонкая кожа, склонность к сухости"
-        : "Комбинированная, склонность к жирности";
+    document.getElementById("skinRes").innerText =
+      skinType === "dry" ? "Тонкая, склонна к сухости" : "Комбинированная, жирная Т-зона";
   }
 
-  function showSteps() {
+  function goMakeup() {
     document.getElementById("screen-analysis").classList.add("hidden");
+    document.getElementById("screen-makeup").classList.remove("hidden");
+  }
+
+  function selectMakeup(type) {
+    makeupType = type;
+    document.getElementById("screen-makeup").classList.add("hidden");
     document.getElementById("screen-steps").classList.remove("hidden");
 
-    const container = document.getElementById("steps");
-    container.innerHTML = "";
+    const steps = document.getElementById("steps");
+    steps.innerHTML = "";
 
-    stepsData[skinType].forEach((step, i) => {
-      container.innerHTML += `
+    makeupSteps[type].forEach((s, i) => {
+      steps.innerHTML += `
         <div class="card">
-          <strong>${i + 1}. ${step[0]}</strong>
-          <div class="brand">${step[1]}</div>
+          <strong>${i + 1}. ${s[0]}</strong>
+          <div class="brand">${s[1]}</div>
         </div>
       `;
     });
-  }
-
-  function restart() {
-    location.reload();
   }
 </script>
 
 </body>
 </html>
+

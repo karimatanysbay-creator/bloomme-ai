@@ -114,8 +114,14 @@
   <!-- 3: АНАЛИЗ -->
   <div id="screen-analysis" class="hidden">
     <h2>Результат анализа</h2>
-    <div class="card"><strong>Цветотип:</strong><div class="brand">Нейтральный</div></div>
-    <div class="card"><strong>Структура кожи:</strong><div class="brand" id="skinRes"></div></div>
+    <div class="card">
+      <strong>Цветотип:</strong>
+      <div class="brand">Нейтральный / адаптируется под макияж</div>
+    </div>
+    <div class="card">
+      <strong>Структура кожи:</strong>
+      <div class="brand" id="skinRes"></div>
+    </div>
     <button class="btn" onclick="goMakeup()">Выбрать макияж</button>
   </div>
 
@@ -139,33 +145,73 @@
 
 <script>
   let skinType = "";
-  let makeupType = "";
 
   const makeupSteps = {
     nude: [
-      ["Лёгкий тон", "YSL / Dior"],
+      ["Увлажняющий крем", "Embryolisse"],
+      ["База", "Milk Makeup"],
+      ["Лёгкий тон", "YSL Nu Bare"],
+      ["Консилер точечно", "NARS"],
+      ["Кремовый бронзер", "Rare Beauty"],
       ["Кремовые румяна", "Rare Beauty"],
+      ["Пудра Т-зона", "Laura Mercier"],
+      ["Сухие румяна", "Charlotte Tilbury"],
       ["Брови", "Benefit"],
-      ["Бальзам / нюд", "Dior Lip Glow"]
+      ["Тушь", "Maybelline Sky High"],
+      ["Хайлайтер", "Rare Beauty"],
+      ["Бальзам / нюд губы", "Dior Lip Glow"],
+      ["Сеттинг-спрей", "Charlotte Tilbury"]
     ],
+
     soft: [
-      ["Тон", "Dior"],
-      ["Контур", "Rare Beauty"],
-      ["Румяна", "Rare Beauty"],
+      ["Крем", "Embryolisse"],
+      ["База", "Dior"],
+      ["Тон", "Dior Forever"],
+      ["Консилер", "NARS"],
+      ["Кремовый контур", "Rare Beauty"],
+      ["Кремовые румяна", "Rare Beauty"],
+      ["Пудра", "Laura Mercier"],
+      ["Сухой бронзер", "Fenty Beauty"],
       ["Тени нюд", "Huda Beauty"],
-      ["Губы", "Charlotte Tilbury"]
+      ["Брови", "Benefit"],
+      ["Тушь", "Lancôme"],
+      ["Хайлайтер", "Charlotte Tilbury"],
+      ["Губы нюд", "Charlotte Tilbury"],
+      ["Фиксация", "Urban Decay"]
     ],
+
     evening: [
-      ["Плотный тон", "Estée Lauder"],
-      ["Контур + бронзер", "Fenty Beauty"],
+      ["Матирующая база", "Benefit"],
+      ["Плотный тон", "Estée Lauder Double Wear"],
+      ["Консилер", "NARS"],
+      ["Кремовый контур", "Fenty Beauty"],
+      ["Кремовые румяна", "Rare Beauty"],
+      ["Пудра", "Laura Mercier"],
+      ["Бэйкинг", "Huda Beauty"],
+      ["Сухой бронзер", "Fenty Beauty"],
       ["Smokey eyes", "Huda Beauty"],
-      ["Красные губы", "Dior"]
+      ["Подводка", "NYX"],
+      ["Накладные ресницы", "Ardell"],
+      ["Хайлайтер", "Fenty Beauty"],
+      ["Красные губы", "Dior"],
+      ["Сеттинг-спрей", "Urban Decay"]
     ],
+
     bridal: [
-      ["Сияющий тон", "YSL"],
-      ["Мягкий контур", "Rare Beauty"],
-      ["Румяна розовые", "Charlotte Tilbury"],
-      ["Gloss губы", "Fenty Beauty"]
+      ["Интенсивное увлажнение", "La Roche-Posay"],
+      ["Сияющая база", "Charlotte Tilbury"],
+      ["Тон", "YSL"],
+      ["Консилер", "Dior"],
+      ["Кремовый контур", "Rare Beauty"],
+      ["Кремовые румяна", "Rare Beauty"],
+      ["Пудра", "Laura Mercier"],
+      ["Сухие румяна", "Charlotte Tilbury"],
+      ["Тени нежные", "Too Faced"],
+      ["Брови", "Benefit"],
+      ["Тушь", "Lancôme"],
+      ["Хайлайтер", "Charlotte Tilbury"],
+      ["Gloss губы", "Fenty Beauty"],
+      ["Сеттинг-спрей", "Charlotte Tilbury"]
     ]
   };
 
@@ -185,7 +231,9 @@
     document.getElementById("screen-photo").classList.add("hidden");
     document.getElementById("screen-analysis").classList.remove("hidden");
     document.getElementById("skinRes").innerText =
-      skinType === "dry" ? "Тонкая, склонна к сухости" : "Комбинированная, жирная Т-зона";
+      skinType === "dry"
+        ? "Тонкая, склонна к сухости"
+        : "Комбинированная, жирная Т-зона";
   }
 
   function goMakeup() {
@@ -194,7 +242,6 @@
   }
 
   function selectMakeup(type) {
-    makeupType = type;
     document.getElementById("screen-makeup").classList.add("hidden");
     document.getElementById("screen-steps").classList.remove("hidden");
 
@@ -214,4 +261,3 @@
 
 </body>
 </html>
-

@@ -77,6 +77,12 @@
       margin-top: 4px;
     }
 
+    .photo-preview {
+      width: 100%;
+      border-radius: 14px;
+      margin-top: 10px;
+    }
+
     .hidden {
       display: none;
     }
@@ -95,17 +101,40 @@
     <button class="btn" onclick="selectSkin('oily')">Жирная</button>
   </div>
 
-  <!-- ЭКРАН 2: ЦВЕТОТИП -->
-  <div id="screen-color" class="hidden">
-    <h2>Твой цветотип</h2>
-    <button class="btn" onclick="selectColor('warm')">Тёплый</button>
-    <button class="btn" onclick="selectColor('cold')">Холодный</button>
-    <button class="btn" onclick="selectColor('neutral')">Нейтральный</button>
+  <!-- ЭКРАН 2: ФОТО -->
+  <div id="screen-photo" class="hidden">
+    <h2>Загрузи фото лица</h2>
+
+    <div class="card">
+      <strong>Рекомендации:</strong>
+      <div class="brand">Без макияжа • дневной свет • фронтально</div>
+      <input type="file" accept="image/*" onchange="previewPhoto(event)">
+      <img id="preview" class="photo-preview hidden">
+    </div>
+
+    <button class="btn" onclick="analyze()">Анализировать</button>
   </div>
 
-  <!-- ЭКРАН 3: ШАГИ -->
+  <!-- ЭКРАН 3: АНАЛИЗ -->
+  <div id="screen-analysis" class="hidden">
+    <h2>Результат анализа</h2>
+
+    <div class="card">
+      <strong>Цветотип:</strong>
+      <div id="colorResult" class="brand"></div>
+    </div>
+
+    <div class="card">
+      <strong>Структура кожи:</strong>
+      <div id="skinResult" class="brand"></div>
+    </div>
+
+    <button class="btn" onclick="showSteps()">Показать макияж</button>
+  </div>
+
+  <!-- ЭКРАН 4: ШАГИ -->
   <div id="screen-steps" class="hidden">
-    <h2>Поэтапный макияж</h2>
+    <h2>Твой макияж</h2>
     <div id="steps"></div>
     <button class="btn secondary" onclick="restart()">Начать заново</button>
   </div>
@@ -114,79 +143,75 @@
 
 <script>
   let skinType = "";
-  let colorType = "";
 
   const stepsData = {
     dry: [
-      { step: "Крем + уход", brand: "Embryolisse / La Roche-Posay" },
-      { step: "Витамин C", brand: "The Ordinary" },
-      { step: "База", brand: "Milk Makeup" },
-      { step: "Тон", brand: "YSL / Dior" },
-      { step: "Бронзер", brand: "Rare Beauty" },
-      { step: "Контур", brand: "Rare Beauty" },
-      { step: "Румяна", brand: "Rare Beauty" },
-      { step: "Брови", brand: "Benefit" },
-      { step: "Консилер", brand: "NARS" },
-      { step: "Пудра", brand: "Laura Mercier" },
-      { step: "Сухие продукты", brand: "Контур / Румяна / Хайлайтер" },
-      { step: "Сеттинг-спрей", brand: "Charlotte Tilbury" }
+      ["Крем + уход", "Embryolisse"],
+      ["Витамин C", "The Ordinary"],
+      ["База", "Milk Makeup"],
+      ["Тон", "YSL / Dior"],
+      ["Контур", "Rare Beauty"],
+      ["Румяна", "Rare Beauty"],
+      ["Консилер", "NARS"],
+      ["Пудра", "Laura Mercier"],
+      ["Сеттинг-спрей", "Charlotte Tilbury"]
     ],
     oily: [
-      { step: "Матирующая база", brand: "Benefit / Milk" },
-      { step: "Тон", brand: "Estée Lauder Double Wear" },
-      { step: "Консилер", brand: "NARS" },
-      { step: "Пудра", brand: "Laura Mercier" },
-      { step: "Бэйкинг", brand: "Huda Beauty" },
-      { step: "Контур", brand: "Rare Beauty" },
-      { step: "Румяна", brand: "Rare Beauty" },
-      { step: "Брови", brand: "Benefit" },
-      { step: "Хайлайтер", brand: "Fenty Beauty" },
-      { step: "Сеттинг-спрей", brand: "Urban Decay" }
+      ["Матирующая база", "Benefit"],
+      ["Тон", "Estée Lauder Double Wear"],
+      ["Консилер", "NARS"],
+      ["Пудра", "Laura Mercier"],
+      ["Бэйкинг", "Huda Beauty"],
+      ["Контур", "Rare Beauty"],
+      ["Румяна", "Rare Beauty"],
+      ["Сеттинг-спрей", "Urban Decay"]
     ]
-  };
-
-  const colorTips = {
-    warm: "Выбирай персиковые, золотые, тёплые нюд оттенки",
-    cold: "Лучше подойдут розовые, ягодные, холодные нюды",
-    neutral: "Подходит большинство оттенков — ориентируйся на баланс"
   };
 
   function selectSkin(type) {
     skinType = type;
     document.getElementById("screen-skin").classList.add("hidden");
-    document.getElementById("screen-color").classList.remove("hidden");
+    document.getElementById("screen-photo").classList.remove("hidden");
   }
 
-  function selectColor(type) {
-    colorType = type;
-    document.getElementById("screen-color").classList.add("hidden");
+  function previewPhoto(event) {
+    const img = document.getElementById("preview");
+    img.src = URL.createObjectURL(event.target.files[0]);
+    img.classList.remove("hidden");
+  }
+
+  function analyze() {
+    document.getElementById("screen-photo").classList.add("hidden");
+    document.getElementById("screen-analysis").classList.remove("hidden");
+
+    document.getElementById("colorResult").innerText =
+      Math.random() > 0.5 ? "Тёплый (персиковые, золотые оттенки)" : "Нейтральный";
+
+    document.getElementById("skinResult").innerText =
+      skinType === "dry"
+        ? "Тонкая кожа, склонность к сухости"
+        : "Комбинированная, склонность к жирности";
+  }
+
+  function showSteps() {
+    document.getElementById("screen-analysis").classList.add("hidden");
     document.getElementById("screen-steps").classList.remove("hidden");
-    renderSteps();
-  }
 
-  function renderSteps() {
     const container = document.getElementById("steps");
     container.innerHTML = "";
 
-    container.innerHTML += `
-      <div class="card">
-        <strong>Цветотип:</strong> ${colorTips[colorType]}
-      </div>
-    `;
-
-    stepsData[skinType].forEach((item, index) => {
+    stepsData[skinType].forEach((step, i) => {
       container.innerHTML += `
         <div class="card">
-          <strong>${index + 1}. ${item.step}</strong>
-          <div class="brand">${item.brand}</div>
+          <strong>${i + 1}. ${step[0]}</strong>
+          <div class="brand">${step[1]}</div>
         </div>
       `;
     });
   }
 
   function restart() {
-    document.getElementById("screen-steps").classList.add("hidden");
-    document.getElementById("screen-skin").classList.remove("hidden");
+    location.reload();
   }
 </script>
 
